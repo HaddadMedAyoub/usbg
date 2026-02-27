@@ -41,19 +41,31 @@ export function getAllNews() {
   if (!fs.existsSync(newsDir)) return [];
 
   const files = fs.readdirSync(newsDir).filter((f) => f.endsWith(".md"));
-  const items = files.map((file) => {
-    const slug = file.replace(/\.md$/, "");
-    const raw = fs.readFileSync(path.join(newsDir, file), "utf8");
-    const { frontmatter, content } = parseFrontmatter(raw);
-    return { slug, frontmatter, content };
-  });
+
+  const items = files
+    .map((file) => {
+      const slug = file.replace(/\.md$/, "").trim();
+      const raw = fs.readFileSync(path.join(newsDir, file), "utf8");
+      const { frontmatter, content } = parseFrontmatter(raw);
+      return { slug, frontmatter, content };
+    })
+    .filter((x) => x.slug && x.slug !== "undefined" && x.slug !== "null");
 
   items.sort((a, b) => (b.frontmatter.date ?? "").localeCompare(a.frontmatter.date ?? ""));
   return items;
 }
 
 export function getNewsBySlug(slug: string) {
+  if (!slug || slug === "undefined" || slug === "null") {
+    throw new Error(`getNewsBySlug: invalid slug "${slug}"`);
+  }
+
   const p = path.join(CONTENT_DIR, "news", `${slug}.md`);
+
+  if (!fs.existsSync(p)) {
+    throw new Error(`getNewsBySlug: file not found for slug "${slug}". Expected: ${p}`);
+  }
+
   const raw = fs.readFileSync(p, "utf8");
   const { frontmatter, content } = parseFrontmatter(raw);
   return { slug, frontmatter, content };
