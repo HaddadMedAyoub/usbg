@@ -356,23 +356,6 @@ export default function AboutPage() {
       </section>
 
       {/* ════════════════════════════
-          SPONSOR MENTION
-      ════════════════════════════ */}
-      <section className="py-10 px-4 bg-black border-y border-[#111]">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="text-gray-700 text-[10px] font-bold tracking-[0.35em] uppercase mb-1">الراعي الرسمي</p>
-            <p className="text-white font-black text-base">CMAF</p>
-            <p className="text-gray-600 text-sm">شركة العطاء للنقل الطبي</p>
-          </div>
-          <div className="h-px sm:h-12 w-full sm:w-px bg-[#1f1f1f]" />
-          <p className="text-gray-600 text-sm text-center sm:text-right max-w-xs leading-relaxed">
-            شريكنا في دعم الرياضة وخدمة المجتمع في بنقردان والجنوب التونسي
-          </p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════
           CLOSING QUOTE
       ════════════════════════════ */}
       <section className="py-24 px-4 bg-[#F7C600] relative overflow-hidden">
