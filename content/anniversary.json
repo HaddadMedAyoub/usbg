@@ -1,0 +1,19 @@
+{
+  "dateISO": "2026-03-03T00:00:00+01:00",
+  "title": "90 سنة",
+  "subtitle": "90 سنة من التاريخ والمجد (1936 – 2026)",
+  "message": "احتفال بذكرى تأسيس الاتحاد الرياضي ببن قردان — قلعة الجنوب الصامدة.",
+  "program": [
+    { "time": "10:00", "title": "استقبال الضيوف", "desc": "الملعب / مقر النادي" },
+    { "time": "12:00", "title": "كلمة رسمية", "desc": "كلمة الهيئة المديرة والإطار الفني" },
+    { "time": "16:00", "title": "تكريم رموز النادي", "desc": "لاعبون، مدربون، مسيرون" }
+  ],
+  "statementTitle": "كلمة الذكرى",
+  "statementBody": "نص قصير رسمي يوضع هنا… يمكنك تغييره لاحقًا.",
+  "downloads": [
+    { "label": "ملصق الذكرى (Poster)", "href": "/downloads/wallpaper1.png" },
+    { "label": "خلفية هاتف (Mobile Wallpaper)", "href": "/downloads/wallpaper2.png" },
+    { "label": "ملصق الذكرى (Poster)", "href": "/downloads/wallpaper3.png" },
+    { "label": "خلفية هاتف (Mobile Wallpaper)", "href": "/downloads/wallpaper4.png" }
+  ]
+}

@@ -1,0 +1,16 @@
+﻿{
+  "clubName": "USBG",
+  "fullName": "Union Sportive de Ben Guerdane",
+  "founded": 1936,
+  "colors": {
+    "primary": "#F7C600",
+    "secondary": "#111111"
+  },
+  "stadium": "Stade 7 Mars",
+  "city": "Ben Guerdane",
+  "socials": {
+    "facebook": "",
+    "instagram": "",
+    "youtube": ""
+  }
+}

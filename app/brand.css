@@ -1,0 +1,37 @@
+/* USBG Brand tokens */
+.btn-primary {
+  background-color: #F7C600;
+  color: #000;
+  font-weight: 700;
+  padding: 0.6rem 1.4rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+  display: inline-block;
+  font-family: var(--font-cairo), sans-serif;
+}
+.btn-primary:hover { background-color: #d4a900; }
+
+.btn-outline {
+  border: 2px solid #F7C600;
+  color: #F7C600;
+  font-weight: 700;
+  padding: 0.6rem 1.4rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover { background-color: #F7C600; color: #000; }
+
+.card-dark {
+  background-color: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  border-right: 4px solid #F7C600;
+  padding-right: 12px;
+}

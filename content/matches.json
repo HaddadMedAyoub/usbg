@@ -1,0 +1,176 @@
+[
+  {
+    "id": 1,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-02-27",
+    "time": "13:00",
+    "home": {
+      "name": "JS أمران",
+      "logo": "/images/teams/js-omrane.png"
+    },
+    "away": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "venue": "ملعب JS أمران",
+    "status": "upcoming"
+  },
+  {
+    "id": 2,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-03-07",
+    "time": "13:00",
+    "home": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "away": {
+      "name": "النادي الإفريقي",
+      "logo": "/images/teams/club-africain.gif"
+    },
+    "venue": "ملعب 07 مارس",
+    "status": "upcoming"
+  },
+  {
+    "id": 3,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-04-04",
+    "time": "12:00",
+    "home": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "away": {
+      "name": "متلوي",
+      "logo": "/images/teams/metlaoui.png"
+    },
+    "venue": "ملعب 07 مارس",
+    "status": "upcoming"
+  },
+  {
+    "id": 4,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-02-15",
+    "time": "14:00",
+    "home": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "away": {
+      "name": "الصفاقسي",
+      "logo": "/images/teams/sfaxien.gif"
+    },
+    "homeScore": 0,
+    "awayScore": 1,
+    "venue": "ملعب 07 مارس",
+    "status": "finished"
+  },
+  {
+    "id": 5,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-02-08",
+    "time": "14:00",
+    "home": {
+      "name": "CA بنزرت",
+      "logo": "/images/teams/ca-bizertin.png"
+    },
+    "away": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "homeScore": 1,
+    "awayScore": 0,
+    "venue": "ملعب CA بنزرت",
+    "status": "finished"
+  },
+  {
+    "id": 6,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-01-31",
+    "time": "14:00",
+    "home": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "away": {
+      "name": "زرزيس",
+      "logo": "/images/teams/zarzis.png"
+    },
+    "homeScore": 0,
+    "awayScore": 0,
+    "venue": "ملعب 07 مارس",
+    "status": "finished"
+  },
+  {
+    "id": 7,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-01-28",
+    "time": "14:00",
+    "home": {
+      "name": "النجم الساحلي",
+      "logo": "/images/teams/etoile-sahel.png"
+    },
+    "away": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "homeScore": 0,
+    "awayScore": 0,
+    "venue": "ملعب النجم الساحلي",
+    "status": "finished"
+  },
+  {
+    "id": 8,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-01-23",
+    "time": "14:00",
+    "home": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "away": {
+      "name": "AS المرسى",
+      "logo": "/images/teams/as-marsa.png"
+    },
+    "homeScore": 1,
+    "awayScore": 0,
+    "venue": "ملعب 07 مارس",
+    "status": "finished"
+  },
+  {
+    "id": 9,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-01-16",
+    "time": "14:00",
+    "home": {
+      "name": "أولمبيك باجة",
+      "logo": "/images/teams/olympique-beja.png"
+    },
+    "away": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "homeScore": 2,
+    "awayScore": 2,
+    "venue": "ملعب أولمبيك باجة",
+    "status": "finished"
+  },
+  {
+    "id": 10,
+    "competition": "الرابطة المحترفة الأولى",
+    "date": "2026-01-10",
+    "time": "14:00",
+    "home": {
+      "name": "الترجي الرياضي",
+      "logo": "/images/teams/esperance.png"
+    },
+    "away": {
+      "name": "الاتحاد ببنقردان",
+      "logo": "/brand/logo.png"
+    },
+    "homeScore": 4,
+    "awayScore": 0,
+    "venue": "ملعب رادس",
+    "status": "finished"
+  }
+]
