@@ -57,7 +57,7 @@ export default function HomePage() {
   <div className="z-10 flex items-center gap-3 mb-10">
     <span className="h-px w-8 bg-[#F7C600]/40" />
     <p className="text-gray-400 text-base sm:text-lg font-semibold tracking-wide">
-      فرسان الحدود &mdash; 90 عامًا من العطاء
+      فرسان الحدود &mdash; 90 عامًا من المجد
     </p>
     <span className="h-px w-8 bg-[#F7C600]/40" />
   </div>

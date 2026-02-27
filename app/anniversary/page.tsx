@@ -3,6 +3,7 @@ import Link from "next/link";
 import Countdown from "@/components/blocks/Countdown";
 import AnimatedCounter from "@/components/blocks/AnimatedCounter";
 import Confetti from "@/components/blocks/Confetti";
+import InstagramShareButton from "@/components/ui/InstagramShareButton";
 
 const timeline = [
   {
@@ -34,16 +35,23 @@ const timeline = [
     highlight: false,
   },
   {
-    year: "2016",
-    title: "ملحمة 07 مارس",
+    year: "2000s",
+    title: "ملعب 07 مارس",
     desc: "الانتقال إلى الملعب الجديد بحي المطار، الذي أُطلق عليه اسم 07 مارس خلودًا لذكرى ملحمة أهالي بنقردان.",
+    decade: "الألفينيات",
+    highlight: false,
+  },
+  {
+    year: "2015",
+    title: "الصعود إلى القسم الأول",
+    desc: "لحظة تاريخية — يُحقق الاتحاد الصعود إلى القسم الأول للمرة الأولى، ليرفع اسم بنقردان على أعلى مستوى.",
     decade: "العقد الثاني",
     highlight: false,
   },
   {
     year: "2026",
     title: "الذكرى التسعون 🎉",
-    desc: "تسعون عامًا من العطاء — فرسان الحدود يواصلون المسيرة بعزم وطموح لا يتوقف.",
+    desc: "—",
     decade: "اليوم",
     highlight: true,
   },
@@ -71,29 +79,42 @@ export default function AnniversaryPage() {
           HERO
       ════════════════════════════ */}
       <section className="relative min-h-[95dvh] flex flex-col items-center justify-center text-center px-4 overflow-hidden bg-black">
-        <Confetti />
-
-        {/* Radial glow */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#F7C600]/8 rounded-full blur-[160px]" />
+        <div className="absolute inset-0 z-[50] pointer-events-none">
+          <Confetti />
         </div>
 
-        {/* Ghost 90 */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/extra/bgflouage.jpg"
+            alt="بنقردان"
+            fill
+            className="object-cover object-center"
+            priority
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black" />
+          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-black/60" />
+        </div>
+
+        <div className="absolute inset-0 pointer-events-none z-[1]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#F7C600]/10 rounded-full blur-[160px]" />
+        </div>
+
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[2]">
           <span
             className="font-black text-transparent select-none"
             style={{
               fontSize: "clamp(12rem, 50vw, 28rem)",
               lineHeight: 1,
-              WebkitTextStroke: "1px rgba(247,198,0,0.06)",
+              WebkitTextStroke: "2px rgba(247, 198, 0, 0.18)",
             }}
           >
             90
           </span>
         </div>
 
-        {/* Logo */}
-        <div className="relative z-10 mb-6">
+        <div className="relative z-[10] mb-6">
           <Image
             src="/brand/logo.png"
             alt="USBG"
@@ -104,40 +125,35 @@ export default function AnniversaryPage() {
           />
         </div>
 
-        {/* Label */}
-        <p className="relative z-10 text-[#F7C600]/60 text-[11px] font-bold tracking-[0.45em] uppercase mb-4">
+        <p className="relative z-[10] text-[#F7C600]/70 text-[11px] font-bold tracking-[0.45em] uppercase mb-4">
           1936 — 2026
         </p>
 
-        {/* Title */}
         <h1
-          className="relative z-10 text-white font-black leading-tight mb-3"
+          className="relative z-[10] text-white font-black leading-tight mb-3 drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
           style={{ fontSize: "clamp(2rem, 9vw, 5rem)" }}
         >
-          تسعينية
+          تسعينيّة
           <br />
-          <span className="text-[#F7C600]">الاتحاد</span>
+          <span className="text-[#F7C600]">الاتّحاد</span>
         </h1>
 
-        {/* Tagline */}
-        <div className="relative z-10 flex items-center gap-3 mb-10">
+        <div className="relative z-[10] flex items-center gap-3 mb-10">
           <span className="h-px w-10 bg-[#F7C600]/30" />
-          <p className="text-gray-400 text-sm sm:text-base font-semibold">
+          <p className="text-gray-300 text-sm sm:text-base font-semibold drop-shadow-[0_1px_8px_rgba(0,0,0,0.9)]">
             فرسان الحدود — 90 عامًا من العطاء
           </p>
           <span className="h-px w-10 bg-[#F7C600]/30" />
         </div>
 
-        {/* Scroll CTA */}
         <Link
           href="#countdown"
-          className="relative z-10 px-8 py-3.5 bg-[#F7C600] text-black font-black text-sm rounded-lg shadow-[0_0_40px_rgba(247,198,0,0.35)] hover:bg-white hover:shadow-[0_0_50px_rgba(247,198,0,0.5)] transition-all duration-200"
+          className="relative z-[10] px-8 py-3.5 bg-[#F7C600] text-black font-black text-sm rounded-lg shadow-[0_0_40px_rgba(247,198,0,0.35)] hover:bg-white hover:shadow-[0_0_50px_rgba(247,198,0,0.5)] transition-all duration-200"
         >
           اكتشف المسيرة ↓
         </Link>
 
-        {/* Scroll line */}
-        <div className="absolute bottom-8 z-10 flex flex-col items-center gap-2 opacity-30">
+        <div className="absolute bottom-8 z-[10] flex flex-col items-center gap-2 opacity-30">
           <div className="w-px h-12 bg-gradient-to-b from-transparent to-[#F7C600]" />
           <div className="w-1.5 h-1.5 rounded-full bg-[#F7C600] animate-bounce" />
         </div>
@@ -172,7 +188,7 @@ export default function AnniversaryPage() {
       </section>
 
       {/* ════════════════════════════
-          TIMELINE — DECADE CARDS
+          TIMELINE
       ════════════════════════════ */}
       <section className="py-20 px-4 bg-[#050505]">
         <div className="max-w-3xl mx-auto">
@@ -182,11 +198,8 @@ export default function AnniversaryPage() {
           <h2 className="text-white font-black text-2xl sm:text-3xl mb-16 text-center">
             90 عامًا من التاريخ
           </h2>
-
           <div className="relative">
-            {/* Timeline line */}
             <div className="absolute right-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#F7C600]/20 to-transparent translate-x-1/2 hidden sm:block" />
-
             <div className="flex flex-col gap-8">
               {timeline.map((item, i) => (
                 <div
@@ -195,7 +208,6 @@ export default function AnniversaryPage() {
                     i % 2 === 0 ? "sm:flex-row" : "sm:flex-row-reverse"
                   }`}
                 >
-                  {/* Card */}
                   <div className="flex-1">
                     <div
                       className={`p-5 rounded-2xl border transition-all duration-300 hover:scale-[1.01] ${
@@ -205,7 +217,9 @@ export default function AnniversaryPage() {
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-3">
-                        <span className={`text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-full ${item.highlight ? "bg-[#F7C600] text-black" : "bg-[#1a1a1a] text-[#F7C600]"}`}>
+                        <span className={`text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-full ${
+                          item.highlight ? "bg-[#F7C600] text-black" : "bg-[#1a1a1a] text-[#F7C600]"
+                        }`}>
                           {item.year}
                         </span>
                         <span className="text-gray-700 text-[10px]">{item.decade}</span>
@@ -216,13 +230,13 @@ export default function AnniversaryPage() {
                       <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
-
-                  {/* Dot */}
                   <div className="hidden sm:flex items-center justify-center shrink-0 mt-6">
-                    <div className={`w-3 h-3 rounded-full border-2 ${item.highlight ? "bg-[#F7C600] border-[#F7C600] shadow-[0_0_16px_rgba(247,198,0,0.8)]" : "bg-black border-[#F7C600]/30"}`} />
+                    <div className={`w-3 h-3 rounded-full border-2 ${
+                      item.highlight
+                        ? "bg-[#F7C600] border-[#F7C600] shadow-[0_0_16px_rgba(247,198,0,0.8)]"
+                        : "bg-black border-[#F7C600]/30"
+                    }`} />
                   </div>
-
-                  {/* Empty side */}
                   <div className="flex-1 hidden sm:block" />
                 </div>
               ))}
@@ -236,20 +250,14 @@ export default function AnniversaryPage() {
       ════════════════════════════ */}
       <section className="py-16 px-4 bg-black">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3">
-            الأبطال
-          </p>
-          <h2 className="text-white font-black text-2xl sm:text-3xl mb-10">
-            قاعة المجد
-          </h2>
-
+          <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3">الأبطال</p>
+          <h2 className="text-white font-black text-2xl sm:text-3xl mb-10">قاعة المجد</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {legends.map((l, i) => (
               <div
                 key={i}
                 className="flex flex-col items-center gap-3 p-5 rounded-2xl border border-[#1f1f1f] bg-[#0a0a0a] hover:border-[#F7C600]/20 transition-colors text-center group"
               >
-                {/* Avatar placeholder */}
                 <div className="w-16 h-16 rounded-full bg-[#F7C600]/10 border-2 border-[#F7C600]/20 flex items-center justify-center group-hover:border-[#F7C600]/40 transition-colors">
                   <span className="text-2xl">👤</span>
                 </div>
@@ -272,12 +280,8 @@ export default function AnniversaryPage() {
       ════════════════════════════ */}
       <section className="py-16 px-4 bg-[#050505]">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3">
-            الملاعب
-          </p>
-          <h2 className="text-white font-black text-2xl sm:text-3xl mb-10">
-            أرض الكفاح
-          </h2>
+          <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3">الملاعب</p>
+          <h2 className="text-white font-black text-2xl sm:text-3xl mb-10">أرض الأمجاد</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="rounded-2xl border border-[#1f1f1f] bg-[#0a0a0a] p-6 hover:border-[#F7C600]/20 transition-colors">
               <span className="text-3xl mb-4 block">🏟️</span>
@@ -304,20 +308,14 @@ export default function AnniversaryPage() {
       ════════════════════════════ */}
       <section className="py-16 px-4 bg-black">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3">
-            هدية للجماهير
-          </p>
-          <h2 className="text-white font-black text-2xl sm:text-3xl mb-3">
-            خلفيات الذكرى التسعين
-          </h2>
+          <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3">هدية للجماهير</p>
+          <h2 className="text-white font-black text-2xl sm:text-3xl mb-3">خلفيات الذكرى التسعين</h2>
           <p className="text-gray-600 text-sm mb-10">
             حمّل خلفيات حصرية بمناسبة الذكرى التسعين للاتحاد الرياضي ببنقردان
           </p>
-
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {wallpapers.map((w, i) => (
               <div key={i} className="group flex flex-col gap-3">
-                {/* Preview */}
                 <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-[#1f1f1f] bg-[#0a0a0a] group-hover:border-[#F7C600]/30 transition-colors">
                   <Image
                     src={w.file}
@@ -326,11 +324,8 @@ export default function AnniversaryPage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                     unoptimized
                   />
-                  {/* Overlay */}
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
                 </div>
-
-                {/* Download button */}
                 <a
                   href={w.file}
                   download
@@ -348,7 +343,7 @@ export default function AnniversaryPage() {
       </section>
 
       {/* ════════════════════════════
-          MESSAGE / CLOSING QUOTE
+          CLOSING QUOTE + SHARE
       ════════════════════════════ */}
       <section className="py-24 px-4 bg-[#F7C600] relative overflow-hidden">
         <div
@@ -366,10 +361,8 @@ export default function AnniversaryPage() {
             height={80}
             className="object-contain mx-auto mb-8 drop-shadow-lg"
           />
-
-          {/* Big quote */}
           <p className="text-black font-black text-2xl sm:text-3xl leading-relaxed mb-6">
-            "أصفر وأسود —
+            "أصفر وأسود
             <br />
             تاريخ يتجدد
             <br />
@@ -379,12 +372,12 @@ export default function AnniversaryPage() {
             الاتحاد الرياضي ببنقردان · 1936 — 2026
           </p>
 
-          {/* Share */}
           <div className="flex flex-col items-center gap-4">
             <p className="text-black/60 text-sm font-semibold">شارك الاحتفال مع الجماهير</p>
             <div className="flex gap-3 justify-center flex-wrap">
+
               <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=https://usbenguerdane.tn/anniversary`}
+                href="https://www.facebook.com/sharer/sharer.php?u=https://usbenguerdane.tn/anniversary"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-black text-white font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-[#111] transition-colors"
@@ -394,8 +387,9 @@ export default function AnniversaryPage() {
                 </svg>
                 فيسبوك
               </a>
+
               <a
-                href={`https://twitter.com/intent/tweet?text=الاتحاد الرياضي ببنقردان يحتفل بالذكرى التسعين 🎉 فرسان الحدود منذ 1936&url=https://usbenguerdane.tn/anniversary`}
+                href="https://twitter.com/intent/tweet?text=الاتحاد الرياضي ببنقردان يحتفل بالذكرى التسعين 🎉 فرسان الحدود منذ 1936&url=https://usbenguerdane.tn/anniversary"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-black text-white font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-[#111] transition-colors"
@@ -405,13 +399,22 @@ export default function AnniversaryPage() {
                 </svg>
                 تويتر
               </a>
+
+              {/* ✅ Separate client component */}
+              <InstagramShareButton />
+
               <Link
                 href="/about"
                 className="flex items-center gap-2 bg-black/10 text-black font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-black/20 transition-colors border border-black/15"
               >
                 اقرأ قصتنا
               </Link>
+
             </div>
+            {/* Hint for Instagram */}
+            <p className="text-black/40 text-[11px] mt-1">
+              انسخ الرابط والصقه في قصتك على إنستغرام 📲
+            </p>
           </div>
         </div>
       </section>
