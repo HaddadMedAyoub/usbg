@@ -11,14 +11,14 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "الاتحاد الرياضي ببنقردان",
-  description: "الموقع الرسمي للاتحاد الرياضي ببنقردان — 90 سنة من العطاء",
+  title: "الاتحاد الرياضي ببنقردان | USBG",
+  description: "فرسان الحدود — 90 عام من العطاء",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
-      <body className="min-h-dvh bg-black text-white font-cairo antialiased">
+      <body className="min-h-dvh bg-black text-white antialiased" style={{ fontFamily: "var(--font-cairo), sans-serif" }}>
         <Header />
         <main className="w-full">{children}</main>
         <Footer />

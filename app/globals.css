@@ -26,3 +26,16 @@ body {
 .text-yellow { color: var(--yellow); }
 .bg-yellow { background-color: var(--yellow); }
 .border-yellow { border-color: var(--yellow); }
+/* Force Western (Latin) numerals instead of Arabic-Indic */
+* {
+  font-variant-numeric: normal;
+}
+
+html {
+  font-feature-settings: "lnum" 1;
+}
+
+/* Override Arabic numeral rendering */
+body, input, button, select, textarea {
+  font-family: var(--font-cairo), sans-serif;
+}

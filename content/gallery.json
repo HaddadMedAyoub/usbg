@@ -1,0 +1,19 @@
+{
+  "photos": [
+    {
+      "src": "/images/gallery/photo-1.jpg",
+      "caption": "الفريق الأول — موسم 2025/26",
+      "category": "فريق"
+    },
+    {
+      "src": "/images/gallery/photo-2.jpg",
+      "caption": "ملعب 07 مارس",
+      "category": "ملعب"
+    },
+    {
+      "src": "/images/gallery/photo-3.jpg",
+      "caption": "تدريبات الفريق",
+      "category": "تدريب"
+    }
+  ]
+}
