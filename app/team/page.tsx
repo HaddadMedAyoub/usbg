@@ -1,69 +1,68 @@
 ﻿"use client";
-import Image from "next/image";
 import { useState } from "react";
 import { squad, coach, Player } from "@/content/data/squad";
 import Link from "next/link";
 
 const positionLabel: Record<string, string> = {
-  GK: "حارس مرمى",
+  GK:  "حارس مرمى",
   DEF: "مدافع",
   MID: "وسط",
   FWD: "مهاجم",
 };
 
 const positionLabelPlural: Record<string, string> = {
-  GK: "حراس المرمى",
+  GK:  "حراس المرمى",
   DEF: "المدافعون",
   MID: "الوسط",
   FWD: "المهاجمون",
 };
 
 const positionGradient: Record<string, string> = {
-  GK: "from-yellow-500/20 to-yellow-500/5 border-yellow-500/30",
+  GK:  "from-yellow-500/20 to-yellow-500/5 border-yellow-500/30",
   DEF: "from-blue-500/20 to-blue-500/5 border-blue-500/30",
   MID: "from-green-500/20 to-green-500/5 border-green-500/30",
   FWD: "from-red-500/20 to-red-500/5 border-red-500/30",
 };
 
 const positionDot: Record<string, string> = {
-  GK: "bg-yellow-400",
+  GK:  "bg-yellow-400",
   DEF: "bg-blue-400",
   MID: "bg-green-400",
   FWD: "bg-red-400",
 };
 
 const positionRing: Record<string, string> = {
-  GK: "ring-yellow-400/50",
+  GK:  "ring-yellow-400/50",
   DEF: "ring-blue-400/50",
   MID: "ring-green-400/50",
   FWD: "ring-red-400/50",
 };
 
 const positionBadge: Record<string, string> = {
-  GK: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+  GK:  "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   DEF: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   MID: "bg-green-500/10 text-green-400 border-green-500/20",
   FWD: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
 const lineupSlots = [
-  { id: "lw", top: "20%", left: "15%" },
-  { id: "st", top: "20%", left: "50%" },
-  { id: "rw", top: "20%", left: "85%" },
-  { id: "lm", top: "46%", left: "15%" },
-  { id: "cm", top: "46%", left: "50%" },
-  { id: "rm", top: "46%", left: "85%" },
-  { id: "lb", top: "72%", left: "15%" },
+  { id: "lw",  top: "20%", left: "15%" },
+  { id: "st",  top: "20%", left: "50%" },
+  { id: "rw",  top: "20%", left: "85%" },
+  { id: "lm",  top: "46%", left: "15%" },
+  { id: "cm",  top: "46%", left: "50%" },
+  { id: "rm",  top: "46%", left: "85%" },
+  { id: "lb",  top: "72%", left: "15%" },
   { id: "lcb", top: "72%", left: "35%" },
   { id: "rcb", top: "72%", left: "65%" },
-  { id: "rb", top: "72%", left: "85%" },
-  { id: "gk", top: "90%", left: "50%" },
+  { id: "rb",  top: "72%", left: "85%" },
+  { id: "gk",  top: "90%", left: "50%" },
 ];
 
 const byPos = (p: string) =>
   squad.filter((x) => x.position === p).sort((a, b) => b.minutes - a.minutes);
 
-const gks = byPos("GK");
+const gks  = byPos("GK");
 const defs = byPos("DEF");
 const mids = byPos("MID");
 const fwds = byPos("FWD");
@@ -71,44 +70,18 @@ const fwds = byPos("FWD");
 const lineupPlayers: Record<string, Player> = {
   gk: gks[0],
   lb: defs[0], lcb: defs[1], rcb: defs[2], rb: defs[3],
-  lm: mids[0], cm: mids[1], rm: mids[2],
-  lw: fwds[0], st: fwds[1], rw: fwds[2],
+  lm: mids[0], cm: mids[1],  rm: mids[2],
+  lw: fwds[0], st: fwds[1],  rw: fwds[2],
 };
-
-
 
 const POSITIONS = ["ALL", "GK", "DEF", "MID", "FWD"] as const;
 
-// Avatar component: photo if available, else number
-function PlayerAvatar({
-  player,
-  size = "md",
-}: {
-  player: Player;
-  size?: "sm" | "md" | "lg";
-}) {
-  const sizes = { sm: "w-9 h-9", md: "w-12 h-12", lg: "w-20 h-20" };
-  const textSizes = { sm: "text-xs", md: "text-sm", lg: "text-2xl" };
-
+function PlayerAvatar({ player, size = "md" }: { player: Player; size?: "sm" | "md" | "lg" }) {
+  const sizes     = { sm: "w-9 h-9",   md: "w-12 h-12", lg: "w-20 h-20" };
+  const textSizes = { sm: "text-xs", md: "text-sm",  lg: "text-2xl"  };
   return (
-    <div
-      className={`${sizes[size]} rounded-full overflow-hidden ring-2 ${positionRing[player.position]} shrink-0 relative`}
-    >
-      {player.photo ? (
-        <Image
-          src={player.photo}
-          alt={player.nameAr}
-          fill
-          className="object-cover object-top"
-          unoptimized
-        />
-      ) : (
-        <div
-          className={`w-full h-full flex items-center justify-center font-black text-white ${positionDot[player.position]} ${textSizes[size]}`}
-        >
-          {player.number ?? "?"}
-        </div>
-      )}
+    <div className={`${sizes[size]} rounded-full ring-2 ${positionRing[player.position]} shrink-0 flex items-center justify-center font-black text-white ${positionDot[player.position]} ${textSizes[size]}`}>
+      {player.number ?? "?"}
     </div>
   );
 }
@@ -137,9 +110,9 @@ export default function TeamPage() {
           </p>
           <div className="flex gap-6 mt-6">
             {[
-              { label: "لاعب", value: squad.length },
-              { label: "هدف", value: squad.reduce((s, p) => s + p.goals, 0) },
-              { label: "دقيقة", value: squad.reduce((s, p) => s + p.minutes, 0).toLocaleString("ar-TN") },
+              { label: "لاعب",   value: squad.length },
+              { label: "هدف",    value: squad.reduce((s, p) => s + p.goals, 0) },
+              { label: "دقيقة",  value: squad.reduce((s, p) => s + p.minutes, 0).toLocaleString("ar-TN") },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-[#F7C600] font-black text-2xl">{stat.value}</p>
@@ -166,19 +139,17 @@ export default function TeamPage() {
             background: "radial-gradient(ellipse at 50% 50%, #0d3d0d 0%, #071a07 60%, #040f04 100%)",
           }}
         >
-          {/* Pitch SVG */}
           <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 138" preserveAspectRatio="none">
-            <rect x="3" y="3" width="94" height="132" fill="none" stroke="white" strokeWidth="0.6" opacity="0.15" />
-            <line x1="3" y1="69" x2="97" y2="69" stroke="white" strokeWidth="0.4" opacity="0.15" />
-            <circle cx="50" cy="69" r="11" fill="none" stroke="white" strokeWidth="0.4" opacity="0.15" />
-            <circle cx="50" cy="69" r="0.8" fill="white" opacity="0.2" />
-            <rect x="24" y="3" width="52" height="19" fill="none" stroke="white" strokeWidth="0.4" opacity="0.12" />
-            <rect x="24" y="116" width="52" height="19" fill="none" stroke="white" strokeWidth="0.4" opacity="0.12" />
-            <rect x="36" y="3" width="28" height="8" fill="none" stroke="white" strokeWidth="0.4" opacity="0.1" />
-            <rect x="36" y="127" width="28" height="8" fill="none" stroke="white" strokeWidth="0.4" opacity="0.1" />
+            <rect x="3" y="3" width="94" height="132" fill="none" stroke="white" strokeWidth="0.6" opacity="0.15"/>
+            <line x1="3" y1="69" x2="97" y2="69" stroke="white" strokeWidth="0.4" opacity="0.15"/>
+            <circle cx="50" cy="69" r="11" fill="none" stroke="white" strokeWidth="0.4" opacity="0.15"/>
+            <circle cx="50" cy="69" r="0.8" fill="white" opacity="0.2"/>
+            <rect x="24" y="3" width="52" height="19" fill="none" stroke="white" strokeWidth="0.4" opacity="0.12"/>
+            <rect x="24" y="116" width="52" height="19" fill="none" stroke="white" strokeWidth="0.4" opacity="0.12"/>
+            <rect x="36" y="3" width="28" height="8" fill="none" stroke="white" strokeWidth="0.4" opacity="0.1"/>
+            <rect x="36" y="127" width="28" height="8" fill="none" stroke="white" strokeWidth="0.4" opacity="0.1"/>
           </svg>
 
-          {/* Players on pitch */}
           {lineupSlots.map((slot) => {
             const player = lineupPlayers[slot.id];
             if (!player) return null;
@@ -197,7 +168,6 @@ export default function TeamPage() {
             );
           })}
 
-          {/* Legend */}
           <div className="absolute bottom-3 left-3 flex flex-col gap-1 z-10">
             {(["GK", "DEF", "MID", "FWD"] as const).map((p) => (
               <div key={p} className="flex items-center gap-1.5">
@@ -219,7 +189,6 @@ export default function TeamPage() {
             className={`bg-[#0f0f0f] border rounded-3xl p-6 w-full max-w-sm bg-gradient-to-b ${positionGradient[selected.position]} shadow-2xl`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Top: photo + number + badge */}
             <div className="flex items-center gap-4 mb-5">
               <PlayerAvatar player={selected} size="lg" />
               <div className="flex-1">
@@ -238,12 +207,11 @@ export default function TeamPage() {
               </span>
             </div>
 
-            {/* Stats */}
             <div className="grid grid-cols-3 gap-3 mb-4">
               {[
-                { value: selected.apps, label: "مباراة" },
-                { value: selected.minutes, label: "دقيقة" },
-                { value: selected.goals, label: "هدف" },
+                { value: selected.apps,    label: "مباراة" },
+                { value: selected.minutes, label: "دقيقة"  },
+                { value: selected.goals,   label: "هدف"    },
               ].map((s) => (
                 <div key={s.label} className="bg-white/5 rounded-2xl p-3 text-center">
                   <p className="text-[#F7C600] font-black text-xl">{s.value}</p>
@@ -252,7 +220,6 @@ export default function TeamPage() {
               ))}
             </div>
 
-            {/* Cards */}
             <div className="grid grid-cols-2 gap-3 mb-5">
               <div className="bg-white/5 rounded-2xl p-3 flex items-center gap-2">
                 <span className="w-4 h-5 bg-yellow-400 rounded-sm shrink-0" />
@@ -270,7 +237,6 @@ export default function TeamPage() {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex gap-3">
               <button
                 onClick={() => setSelected(null)}
@@ -285,30 +251,28 @@ export default function TeamPage() {
                 الملف الكامل ←
               </Link>
             </div>
-
           </div>
         </div>
       )}
 
       {/* ══ Full Squad ══ */}
       <div className="px-4 max-w-4xl mx-auto">
-        {/* Filter tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide pb-1">
           {POSITIONS.map((p) => (
             <button
               key={p}
               onClick={() => setActivePos(p)}
-              className={`shrink-0 px-5 py-2 rounded-full text-xs font-bold border transition-all duration-200 ${activePos === p
+              className={`shrink-0 px-5 py-2 rounded-full text-xs font-bold border transition-all duration-200 ${
+                activePos === p
                   ? "bg-[#F7C600] text-black border-[#F7C600] shadow-[0_0_20px_rgba(247,198,0,0.3)]"
                   : "border-[#2a2a2a] text-gray-400 hover:border-[#F7C600]/30 hover:text-white"
-                }`}
+              }`}
             >
               {p === "ALL" ? "الكل" : positionLabelPlural[p]}
             </button>
           ))}
         </div>
 
-        {/* Grouped by position when ALL */}
         {activePos === "ALL" ? (
           (["GK", "DEF", "MID", "FWD"] as const).map((pos) => (
             <div key={pos} className="mb-8">
@@ -373,24 +337,11 @@ function PlayerList({
           onClick={() => onSelect(player)}
           className="flex items-center gap-3 rounded-2xl border border-[#1a1a1a] bg-[#080808] px-4 py-3 hover:border-[#F7C600]/20 hover:bg-[#F7C600]/3 transition-all duration-200 text-right w-full group"
         >
-          {/* Photo / number avatar */}
-          <div className={`w-10 h-10 rounded-full overflow-hidden ring-2 ${positionRing[player.position]} shrink-0 relative`}>
-            {player.photo ? (
-              <Image
-                src={player.photo}
-                alt={player.nameAr}
-                fill
-                className="object-cover object-top"
-                unoptimized
-              />
-            ) : (
-              <div className={`w-full h-full flex items-center justify-center font-black text-white text-xs ${positionDot[player.position]}`}>
-                {player.number ?? "?"}
-              </div>
-            )}
+          {/* Number avatar */}
+          <div className={`w-10 h-10 rounded-full ring-2 ${positionRing[player.position]} shrink-0 flex items-center justify-center font-black text-white text-xs ${positionDot[player.position]}`}>
+            {player.number ?? "?"}
           </div>
 
-          {/* Name + nationality */}
           <div className="flex-1 min-w-0 text-right">
             <p className="text-white font-bold text-sm truncate group-hover:text-[#F7C600] transition-colors">
               {player.nameAr}
@@ -400,12 +351,10 @@ function PlayerList({
             </p>
           </div>
 
-          {/* Position badge */}
           <span className={`text-[10px] font-bold px-2 py-1 rounded-lg border shrink-0 ${positionBadge[player.position]}`}>
             {positionLabel[player.position]}
           </span>
 
-          {/* Stats */}
           <div className="flex gap-3 shrink-0">
             <div className="text-center hidden sm:block">
               <p className="text-white font-black text-sm">{player.apps}</p>
@@ -423,5 +372,3 @@ function PlayerList({
     </div>
   );
 }
-
-
