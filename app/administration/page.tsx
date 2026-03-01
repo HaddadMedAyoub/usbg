@@ -8,7 +8,7 @@ const administrations = [
     isMedical: false,
     members: [
       { name: "عمار الجريئ", role: "رئيس النادي", photo: "/images/administration/moudir.jpeg" },
-      { name: "شهر الدين عون", role: "نائب الرئيس", photo: "/images/administration/chahreddineoun.jpeg" },
+      { name: "شهر الدين عون", role: "نائب الرئيس", photo: "/images/administration/chahreddineOun.jpeg" },
       { name: "لمجد جاءبالله", role: "الكاتب العام", photo: "/images/administration/lamjedjaballah.jpeg" },
       { name: "لزهر المحظي", role: "أمين المال", photo: "/images/administration/lazhermahdi.jpeg" },
       { name: "وليد فارس", role: "المدير الرياضي", photo: "/images/administration/walidfares.jpeg" },
@@ -20,11 +20,11 @@ const administrations = [
     current: false,
     isMedical: false,
     members: [
-      { name: "الفتحي هلال", role: "رئيس النادي", photo: "/images/administration/fathihlal.jpeg" },
-      { name: "المنحي عبعاب", role: "نائب الرئيس", photo: "/images/administration/monjiabaab.jpeg" },
-      { name: "حامد نبهان", role: "الكاتب العام", photo: "/images/administration/hamednabhan.jpeg" },
-      { name: "فرح السالمي", role: "أمين المال", photo: "/images/administration/farahsalmi.jpeg" },
-      { name: "ايمن شندول", role: "المدير الرياضي", photo: "/images/administration/aymenchandoul.jpeg" },
+      { name: "الفتحي هلال", role: "رئيس النادي", photo: "/images/administration/former/fathihlal.jpeg" },
+      { name: "المنحي عبعاب", role: "نائب الرئيس", photo: "/images/administration/former/monjiabaab.jpeg" },
+      { name: "حامد نبهان", role: "الكاتب العام", photo: "/images/administration/former/hamednabhan.jpeg" },
+      { name: "فرح السالمي", role: "أمين المال", photo: "/images/administration/former/farahsalmi.jpeg" },
+      { name: "ايمن شندول", role: "المدير الرياضي", photo: "/images/administration/former/aymenchandoul.jpeg" },
     ],
   },
   {
