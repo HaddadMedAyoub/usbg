@@ -14,6 +14,21 @@
       "src": "/images/gallery/photo-3.jpg",
       "caption": "تدريبات الفريق",
       "category": "تدريب"
+    },
+    {
+      "src": "/images/gallery/photo-4.jpg",
+      "caption": "جماهير الاتحاد الرياضي ببنقردان",
+      "category": "جماهير"
+    },
+    {
+      "src": "/images/gallery/photo-5.jpeg",
+      "caption": "لحظة تسجيل هدف الفوز",
+      "category": "مباريات"
+    },
+    {
+      "src": "/images/gallery/photo-6.jpeg",
+      "caption": "اللاعبون يحتفلون باللقب",
+      "category": "احتفالات"
     }
   ]
 }

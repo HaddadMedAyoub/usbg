@@ -247,10 +247,10 @@ export default function AnniversaryPage() {
     NOSTALGIA PHOTO BREAK
     Full-width atmospheric image
     separating timeline from hall of fame
-════════════════════════════ */}
+     ════════════════════════════ */}
       <section className="relative w-full h-[60vh] sm:h-[75vh] overflow-hidden">
         <Image
-          src="/images/extra/nostalgie.png"
+          src="/images/extra/nostalgie.jpg"
           alt="ذكريات الاتحاد الرياضي ببنقردان"
           fill
           className="object-cover object-center"

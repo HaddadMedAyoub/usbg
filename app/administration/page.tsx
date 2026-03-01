@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const administrations = [
   {
     era: "2025 — حتى الآن",
@@ -7,24 +5,10 @@ const administrations = [
     current: true,
     isMedical: false,
     members: [
-      { name: "عمار الجريئ", role: "رئيس النادي", photo: "/images/administration/moudir.jpeg" },
-      { name: "شهر الدين عون", role: "نائب الرئيس", photo: "/images/administration/chahreddineOun.jpeg" },
-      { name: "لمجد جاءبالله", role: "الكاتب العام", photo: "/images/administration/lamjedjaballah.jpeg" },
-      { name: "لزهر المحظي", role: "أمين المال", photo: "/images/administration/lazhermahdi.jpeg" },
-      { name: "وليد فارس", role: "المدير الرياضي", photo: "/images/administration/walidfares.jpeg" },
-    ],
-  },
-  {
-    era: "2024 — 2025",
-    title: "الهيئة المديرة",
-    current: false,
-    isMedical: false,
-    members: [
-      { name: "الفتحي هلال", role: "رئيس النادي", photo: "/images/administration/former/fathihlal.jpeg" },
-      { name: "المنحي عبعاب", role: "نائب الرئيس", photo: "/images/administration/former/monjiabaab.jpeg" },
-      { name: "حامد نبهان", role: "الكاتب العام", photo: "/images/administration/former/hamednabhan.jpeg" },
-      { name: "فرح السالمي", role: "أمين المال", photo: "/images/administration/former/farahsalmi.jpeg" },
-      { name: "ايمن شندول", role: "المدير الرياضي", photo: "/images/administration/former/aymenchandoul.jpeg" },
+      { name: "عمار الجريئ",     role: "رئيس النادي"  },
+      { name: "شهر الدين عون",   role: "نائب الرئيس"  },
+      { name: "لمجد جاءبالله",   role: "الكاتب العام" },
+      { name: "لزهر المحظي",     role: "أمين المال"   },
     ],
   },
   {
@@ -32,39 +16,36 @@ const administrations = [
     current: false,
     isMedical: true,
     members: [
-      { name: " الدكتور عمارة لملوم ", role: "طبيب الفريق", photo: "/images/medical/amaralamloum.jpeg" },
-      { name: " ياسين شواط", role: " اخصائي فيزيائي", photo: "/images/medical/yassinechouat.jpeg" },
-      { name: "امان الجدي", role: "مساعد طبي", photo: "/images/medical/amenjadi.jpeg" },
+      { name: "الدكتور عمارة لملوم", role: "طبيب الفريق"    },
+      { name: "ياسين شواط",          role: "اخصائي فيزيائي" },
+      { name: "امان الجدي",           role: "مساعد طبي"      },
     ],
   },
 ];
 
 function MemberCard({ member, highlight, medical }: {
-  member: { name: string; role: string; photo?: string };
+  member: { name: string; role: string };
   highlight: boolean;
   medical?: boolean;
 }) {
   return (
-    <div className={`p-4 rounded-2xl border text-center ${
-      highlight ? "bg-[#F7C600]/5 border-[#F7C600]/20"
-      : medical ? "bg-[#0a1a1a] border-[#0d2a2a]"
-      : "bg-[#0a0a0a] border-[#1a1a1a]"
+    <div className={`px-5 py-4 rounded-2xl border text-center transition-all ${
+      highlight
+        ? "bg-[#F7C600]/5 border-[#F7C600]/20 hover:bg-[#F7C600]/10"
+        : medical
+        ? "bg-[#0a1a1a] border-cyan-900/30 hover:border-cyan-800/50"
+        : "bg-[#0a0a0a] border-[#1a1a1a]"
     }`}>
-      <div className={`relative w-16 h-16 rounded-full overflow-hidden border-2 mx-auto mb-3 ${
-        medical ? "border-[#22d3ee]/30" : "border-[#F7C600]/20"
+      <p className={`font-black text-sm leading-snug ${
+        highlight ? "text-white" : medical ? "text-cyan-300/80" : "text-gray-400"
       }`}>
-        {member.photo ? (
-          <Image src={member.photo} alt={member.name} fill className="object-cover object-top" unoptimized />
-        ) : (
-          <div className="w-full h-full bg-[#111] flex items-center justify-center">
-            <span className="text-xl opacity-30">{medical ? "🩺" : "👤"}</span>
-          </div>
-        )}
-      </div>
-      <p className={`font-black text-xs ${
-        highlight ? "text-white" : medical ? "text-cyan-400/70" : "text-gray-600"
-      }`}>{member.name}</p>
-      <p className="text-gray-700 text-[10px] mt-0.5">{member.role}</p>
+        {member.name}
+      </p>
+      <p className={`text-[11px] mt-1.5 ${
+        highlight ? "text-[#F7C600]/60" : medical ? "text-cyan-900" : "text-gray-700"
+      }`}>
+        {member.role}
+      </p>
     </div>
   );
 }
@@ -83,93 +64,57 @@ export default function AdministrationPage() {
 
         {administrations.map((admin, i) => (
           <div key={i} className="mb-14">
-
-            {/* Era header */}
+            {/* Section header */}
             <div className="flex items-center gap-3 mb-6">
               {admin.current ? (
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7C600]/10 border border-[#F7C600]/20 text-[#F7C600] text-[10px] font-black">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#F7C600] animate-pulse" />
                   الحالي
                 </span>
-              ) : admin.isMedical ? (
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-900/20 border border-cyan-800/30 text-cyan-500 text-[10px] font-black">
-                  🩺 طبي
-                </span>
               ) : (
-                <span className="px-3 py-1 rounded-full bg-[#111] border border-[#1f1f1f] text-gray-700 text-[10px] font-black">
-                  سابق
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-900/20 border border-cyan-800/30 text-cyan-600 text-[10px] font-black">
+                  🩺 طبي
                 </span>
               )}
               <p className={`font-black text-lg ${
-                admin.current ? "text-white" : admin.isMedical ? "text-cyan-400/70" : "text-gray-600"
-              }`}>{admin.title}</p>
-              <span className="text-gray-700 text-xs">{admin.era}</span>
+                admin.current ? "text-white" : "text-cyan-400/70"
+              }`}>
+                {admin.title}
+              </p>
+              {admin.era && (
+                <span className="text-gray-700 text-xs">{admin.era}</span>
+              )}
             </div>
 
             {admin.current ? (
-              /* ── Current board: hierarchical layout ── */
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-center">
-                  <div className="w-1/2 sm:w-1/4">
-                    <MemberCard member={admin.members[0]} highlight={true} />
-                  </div>
-                </div>
-                <div className="flex justify-center">
-                  <div className="w-1/2 sm:w-1/4">
-                    <MemberCard member={admin.members[1]} highlight={true} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 sm:w-1/2 mx-auto w-full">
+              <div className="flex flex-col gap-3">
+                {/* President — full width */}
+                <MemberCard member={admin.members[0]} highlight={true} />
+                {/* Vice president — full width */}
+                <MemberCard member={admin.members[1]} highlight={true} />
+                {/* Secretary + Treasurer — side by side */}
+                <div className="grid grid-cols-2 gap-3">
                   <MemberCard member={admin.members[2]} highlight={true} />
                   <MemberCard member={admin.members[3]} highlight={true} />
-                </div>
-                <div className="flex justify-center">
-                  <div className="w-1/2 sm:w-1/4">
-                    <MemberCard member={admin.members[4]} highlight={true} />
-                  </div>
-                </div>
-              </div>
-
-            ) : admin.isMedical ? (
-              /* ── Medical team: doctor alone, physicians below ── */
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="h-px flex-1 bg-[#111]" />
-                  <span className="text-cyan-900 text-[10px] font-bold tracking-widest uppercase">الطاقم الطبي</span>
-                  <span className="h-px flex-1 bg-[#111]" />
-                </div>
-                {/* Doctor alone */}
-                <div className="flex justify-center">
-                  <div className="w-1/2 sm:w-1/4">
-                    <MemberCard member={admin.members[0]} highlight={false} medical={true} />
-                  </div>
-                </div>
-                {/* Physicians side by side */}
-                <div className="grid grid-cols-2 gap-3 sm:w-1/2 mx-auto w-full">
-                  {admin.members.slice(1).map((m, j) => (
-                    <MemberCard key={j} member={m} highlight={false} medical={true} />
-                  ))}
                 </div>
               </div>
 
             ) : (
-              /* ── Past boards: flat grid ── */
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="h-px flex-1 bg-[#111]" />
-                  <span className="text-gray-800 text-[10px] font-bold tracking-widest uppercase">هيئة سابقة</span>
-                  <span className="h-px flex-1 bg-[#111]" />
+                  <span className="h-px flex-1 bg-[#0f1f1f]" />
+                  <span className="text-cyan-900 text-[10px] font-bold tracking-widest uppercase">
+                    الطاقم الطبي
+                  </span>
+                  <span className="h-px flex-1 bg-[#0f1f1f]" />
                 </div>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {admin.members.map((m, j) => {
-                    const isLast = j === admin.members.length - 1;
-                    const isOdd = admin.members.length % 2 !== 0;
-                    return (
-                      <div key={j} className={`${isLast && isOdd ? "w-1/2 sm:w-1/4" : "w-[calc(50%-6px)] sm:w-[calc(25%-9px)]"}`}>
-                        <MemberCard member={m} highlight={false} medical={false} />
-                      </div>
-                    );
-                  })}
+                {/* Doctor — full width */}
+                <MemberCard member={admin.members[0]} highlight={false} medical={true} />
+                {/* Rest — side by side */}
+                <div className="grid grid-cols-2 gap-3">
+                  {admin.members.slice(1).map((m, j) => (
+                    <MemberCard key={j} member={m} highlight={false} medical={true} />
+                  ))}
                 </div>
               </div>
             )}
