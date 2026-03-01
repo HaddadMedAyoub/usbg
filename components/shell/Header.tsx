@@ -9,8 +9,8 @@ const navLinks = [
   { label: "من نحن", href: "/about" },
   { label: "الفريق", href: "/team" },
   { label: "الأخبار", href: "/news" },
-  { label: "الوسائط", href: "/media" },
-  { label: "المجلس", href: "/board" },
+  { label: "المكتبة الالكترونية", href: "/media" },
+  { label: "المجلس", href: "/administration" },
   { label: "اتصل بنا", href: "/contact" },
 ];
 
@@ -69,7 +69,7 @@ export default function Header() {
                 الاتحاد الرياضي
               </span>
               <span className="text-[#F7C600] text-[11px] font-bold tracking-[0.15em] mt-0.5">
-                ببنقردان
+                ببنڤردان
               </span>
             </div>
           </Link>

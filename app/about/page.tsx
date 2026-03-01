@@ -7,28 +7,28 @@ const goals = [
     icon: "⚽",
     title: "تطوير كرة القدم",
     desc: "تطوير كرة القدم بمختلف أصنافها وفئاتها العمرية",
-    num: "4",
+    num: "",
     numLabel: "فئات عمرية",
   },
   {
     icon: "🌟",
     title: "صناعة المواهب",
     desc: "الاستثمار في تكوين الشبان وصناعة أبطال المستقبل",
-    num: "90",
+    num: "",
     numLabel: "عامًا من التكوين",
   },
   {
     icon: "🏆",
     title: "الحضور الوطني",
     desc: "تعزيز حضور النادي وسمعته على الصعيدين الوطني والدولي",
-    num: "#1",
-    numLabel: "نادي الجنوب الشرقي",
+    num: "",
+    numLabel: "نادي الجنوب ",
   },
   {
     icon: "🤝",
     title: "المجتمع والمدينة",
     desc: "المساهمة الفاعلة في الحياة الثقافية والاجتماعية لمدينة بنقردان",
-    num: "1",
+    num: "",
     numLabel: "مدينة، هوية واحدة",
   },
 ];
@@ -55,8 +55,8 @@ const values = [
 ];
 
 const colors = [
-  { color: "#F7C600", name: "الأصفر", meaning: "العزيمة والقوة والطموح" },
-  { color: "#0a0a0a", name: "الأسود", meaning: "الصمود والهيبة والعمق" },
+  { color: "#F7C600", name: "الأصفر", meaning: "" },
+  { color: "#0a0a0a", name: "الأسود", meaning: "" },
 ];
 
 export default function AboutPage() {
@@ -164,33 +164,33 @@ export default function AboutPage() {
       </section>
 
       {/* ════════════════════════════
-          ANIMATED STATS
-      ════════════════════════════ */}
-      <section className="py-16 px-4 bg-[#F7C600] relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)",
-            backgroundSize: "20px 20px",
-          }}
+    VIRAGE PHOTO BREAK
+════════════════════════════ */}
+      <section className="relative w-full h-[15vh] overflow-hidden">
+        <Image
+          src="/images/extra/virage.jpeg"
+          alt="جماهير الاتحاد"
+          fill
+          className="object-cover object-center"
+          unoptimized
         />
-        <div className="relative max-w-4xl mx-auto grid grid-cols-3 gap-6 text-center">
-          {[
-            { target: 90, suffix: "", label: "عامًا من العطاء" },
-            { target: 1936, suffix: "", label: "سنة التأسيس" },
-            { target: 1, suffix: "#", label: "نادي الجنوب الشرقي" },
-          ].map((stat, i) => (
-            <div key={i} className="flex flex-col items-center gap-1">
-              <span className="text-black font-black leading-none" style={{ fontSize: "clamp(2rem, 8vw, 4rem)" }}>
-                {stat.suffix === "#" ? "#" : ""}
-                <AnimatedCounter target={stat.target} />
-                {stat.suffix !== "#" ? stat.suffix : ""}
-              </span>
-              <span className="text-black/55 text-xs sm:text-sm font-semibold">{stat.label}</span>
-            </div>
-          ))}
-        </div>
+
+        {/* Yellow tint */}
+        <div className="absolute inset-0 bg-[#F7C600]/20 mix-blend-multiply" />
+
+        {/* Cloud/glow — top */}
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[120%] h-40 bg-[#F7C600]/30 blur-[60px] rounded-full" />
+
+        {/* Cloud/glow — bottom */}
+        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[120%] h-40 bg-[#F7C600]/30 blur-[60px] rounded-full" />
+
+        {/* Cloud/glow — center burst */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-32 bg-[#F7C600]/15 blur-[80px] rounded-full" />
+
+        {/* Fade into black top & bottom */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50" />
       </section>
+
 
       {/* ════════════════════════════
           STORY
@@ -214,15 +214,19 @@ export default function AboutPage() {
                 <span className="text-white font-semibold"> الانضباط، التضامن، وروح الفريق.</span>
               </p>
               <p>
-                تعاقبت الأجيال، وتغيّرت الظروف، لكن بقيت هوية النادي ثابتة —
-                نادٍ شعبي قريب من جمهوره، يدافع عن ألوانه بشرف، ويؤمن بأن
+                تعاقبت الأجيال، وتغيّرت الظروف، لكن بقيت{" "}
+                <span className="text-[#F7C600] font-semibold">هوية الاتحاد</span>{" "}
+                ثابتة — نادٍ شعبي قريب من جمهوره، يدافع عن ألوانه بشرف، ويؤمن بأن
                 <span className="text-[#F7C600] font-semibold"> الطموح لا تحدّه الجغرافيا.</span>
               </p>
+
               <p>
                 إن الاتحاد الرياضي ببنقردان ليس مجرد فريق في بطولة، بل هو قصة
-                مدينة صنعت من الرياضة هوية، ومن التحديات قوة، ومن الجماهير
+                مدينة صنعت من الرياضة{" "}
+                <span className="text-[#F7C600] font-semibold">هوية</span>، ومن التحديات قوة، ومن الجماهير
                 <span className="text-white font-semibold"> سندًا لا ينكسر.</span>
               </p>
+
             </div>
           </div>
 
@@ -238,13 +242,18 @@ export default function AboutPage() {
                   { label: "سنة التأسيس", value: "1936" },
                   { label: "المدينة", value: "بنقردان، ولاية مدنين" },
                   { label: "الملعب", value: "ملعب 07 مارس" },
-                  { label: "الألوان", value: "أصفر وأسود" },
+                  { label: "الشعار", value: "" },
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between border-b border-[#151515] pb-3 last:border-0 last:pb-0">
                     <span className="text-gray-600 text-xs">{row.label}</span>
-                    <span className="text-white text-sm font-bold">{row.value}</span>
+                    {row.label === "الشعار" ? (
+                      <Image src="/brand/logo.png" alt="USBG" width={25} height={25} className="object-contain" />
+                    ) : (
+                      <span className="text-white text-sm font-bold">{row.value}</span>
+                    )}
                   </div>
                 ))}
+
               </div>
             </div>
           </div>

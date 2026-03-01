@@ -14,7 +14,20 @@ const socials = [
       </svg>
     ),
   },
+  {
+    name: "Instagram",
+    handle: "unionsportivebenguerdane",
+    href: "https://www.instagram.com/unionsportivebenguerdane",
+    color: "#E1306C",
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.975 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.975.975-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.975-.975-1.246-2.242-1.308-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.975-.975 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-1.613.074-3.067.372-4.204 1.508C1.712 2.716 1.414 4.17 1.34 5.783 1.282 7.063 1.268 7.471 1.268 12c0 4.529.014 4.937.072 6.217.074 1.613.372 3.067 1.508 4.204 1.137 1.136 2.591 1.434 4.204 1.508 1.28.058 1.688.072 4.948.072s3.667-.014 4.947-.072c1.613-.074 3.067-.372 4.204-1.508 1.136-1.137 1.434-2.591 1.508-4.204.058-1.28.072-1.688.072-4.948s-.014-3.667-.072-4.947c-.074-1.613-.372-3.067-1.508-4.204C19.214 1.714 17.76 1.416 16.147 1.342 14.867 1.284 14.459 1.27 12 1.27z" />
+        <path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+      </svg>
+    ),
+  },
 ];
+
 
 const info = [
   {
@@ -119,35 +132,50 @@ export default function ContactPage() {
               </p>
               {[
                 {
-                  name: "CMAF",
+                  name: "العطاء",
                   nameFull: "شركة العطاء للنقل الطبي",
+                  logo: "/images/sponsors/alataa.png",
+                },
+                {
+                  name: "CMAF",
+                  nameFull: "CMAF",
                   logo: "/images/sponsors/cmaf.png",
                 },
                 {
-                  name: "العطاء",
-                  nameFull: "شركة العطاء للنقل الطبي",
-                  logo: "/images/sponsors/attaa.png",
+                  name: "ARAF",
+                  nameFull: "STE ARAF CO",
+                  logo: "/images/sponsors/arafco.png",
                 },
               ].map((s, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-5 rounded-2xl border border-[#F7C600]/15 bg-[#F7C600]/5 hover:border-[#F7C600]/30 transition-colors"
+                  className="flex items-center gap-4 p-4 rounded-2xl border border-[#F7C600]/20 bg-gradient-to-r from-[#F7C600]/8 to-transparent hover:border-[#F7C600]/40 hover:from-[#F7C600]/12 hover:shadow-[0_0_20px_rgba(247,198,0,0.06)] transition-all duration-300 group"
                 >
-                  <SponsorLogo
-                    src={s.logo}
-                    alt={s.name}
-                    fallback={s.name.slice(0, 1)}
-                  />
-                  <div>
-                    <p className="text-[#F7C600]/60 text-[10px] font-bold tracking-widest uppercase mb-0.5">
+                  {/* Logo with glow ring */}
+                  <div className="relative shrink-0">
+                    <div className="absolute inset-0 bg-[#F7C600]/20 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-[#F7C600]/20 bg-[#111]">
+                      <SponsorLogo src={s.logo} alt={s.name} fallback={s.name.slice(0, 1)} />
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[#F7C600]/50 text-[9px] font-bold tracking-widest uppercase mb-0.5">
                       راعٍ رسمي
                     </p>
-                    <p className="text-[#F7C600] font-black text-base">{s.name}</p>
-                    <p className="text-gray-500 text-xs mt-0.5">{s.nameFull}</p>
+                    <p className="text-[#F7C600] font-black text-sm">{s.name}</p>
+                    <p className="text-gray-600 text-[10px] truncate">{s.nameFull}</p>
                   </div>
+
+                  {/* Gold arrow indicator */}
+                  <svg className="w-3.5 h-3.5 text-[#F7C600]/20 group-hover:text-[#F7C600]/60 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                  </svg>
                 </div>
               ))}
             </div>
+
 
           </div>
 
@@ -157,26 +185,39 @@ export default function ContactPage() {
               تابعنا
             </p>
 
-            {/* Facebook card */}
-            <a
-              href="https://www.facebook.com/UnionSportiveBenGuerdane"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 p-5 rounded-2xl border border-[#1f1f1f] bg-[#0a0a0a] hover:border-[#1877F2]/40 hover:bg-[#1877F2]/5 transition-all duration-300 group"
-            >
-              <div className="w-11 h-11 rounded-xl bg-[#1877F2]/10 border border-[#1877F2]/20 flex items-center justify-center shrink-0 group-hover:bg-[#1877F2]/20 transition-colors">
-                <svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+            {socials.map((s) => (
+              <a
+                key={s.name}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-5 rounded-2xl border border-[#1f1f1f] bg-[#0a0a0a] hover:border-white/10 hover:bg-white/5 transition-all duration-300 group"
+              >
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                  style={{
+                    backgroundColor: s.color + "1a",
+                    border: `1px solid ${s.color}33`,
+                    color: s.color,
+                  }}
+                >
+                  {s.icon}
+                </div>
+                <div className="flex-1">
+                  <p className="text-white font-black text-sm">{s.name}</p>
+                  <p className="text-gray-600 text-xs mt-0.5">{s.handle}</p>
+                </div>
+                <svg
+                  className="w-4 h-4 text-gray-700 group-hover:text-gray-400 transition-colors"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
-              </div>
-              <div className="flex-1">
-                <p className="text-white font-black text-sm">Facebook</p>
-                <p className="text-gray-600 text-xs mt-0.5">UnionSportiveBenGuerdane</p>
-              </div>
-              <svg className="w-4 h-4 text-gray-700 group-hover:text-[#1877F2] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
+              </a>
+            ))}
+
+
+
 
             {/* Map embed */}
             <div className="rounded-2xl overflow-hidden border border-[#1f1f1f] flex-1 min-h-[240px]">
@@ -196,8 +237,8 @@ export default function ContactPage() {
       </section>
 
       {/* ════════════════════════════
-          SEND MESSAGE SECTION
-      ════════════════════════════ */}
+    SEND MESSAGE SECTION
+════════════════════════════ */}
       <section className="py-16 px-4 bg-black">
         <div className="max-w-2xl mx-auto">
           <p className="text-[#F7C600] text-[11px] font-bold tracking-[0.4em] uppercase mb-3 text-center">
@@ -207,11 +248,11 @@ export default function ContactPage() {
             لديك استفسار؟
           </h2>
           <p className="text-gray-600 text-sm text-center mb-10">
-            تواصل معنا عبر صفحتنا على فيسبوك وسنرد في أقرب وقت ممكن
+            تواصل معنا عبر منصات التواصل الاجتماعي وسنرد في أقرب وقت ممكن
           </p>
 
-          {/* CTA to Facebook messenger */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
+            {/* Facebook Messenger */}
             <a
               href="https://m.me/UnionSportiveBenGuerdane"
               target="_blank"
@@ -224,6 +265,21 @@ export default function ContactPage() {
               راسلنا على Facebook
             </a>
 
+            {/* Instagram DM */}
+            <a
+              href="https://ig.me/m/unionsportivebenguerdane"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3 w-full py-4 bg-[#E1306C] text-white font-black text-sm rounded-xl hover:bg-[#c4265d] transition-colors shadow-[0_0_30px_rgba(225,48,108,0.2)]"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.975 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.975.975-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.975-.975-1.246-2.242-1.308-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.975-.975 2.242-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-1.613.074-3.067.372-4.204 1.508C1.712 2.716 1.414 4.17 1.34 5.783 1.282 7.063 1.268 7.471 1.268 12c0 4.529.014 4.937.072 6.217.074 1.613.372 3.067 1.508 4.204 1.137 1.136 2.591 1.434 4.204 1.508 1.28.058 1.688.072 4.948.072s3.667-.014 4.947-.072c1.613-.074 3.067-.372 4.204-1.508 1.136-1.137 1.434-2.591 1.508-4.204.058-1.28.072-1.688.072-4.948s-.014-3.667-.072-4.947c-.074-1.613-.372-3.067-1.508-4.204C19.214 1.714 17.76 1.416 16.147 1.342 14.867 1.284 14.459 1.27 12 1.27z" />
+                <path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+              </svg>
+              راسلنا على Instagram
+            </a>
+
+            {/* Follow page — neutral */}
             <a
               href="https://www.facebook.com/UnionSportiveBenGuerdane"
               target="_blank"
@@ -235,6 +291,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
 
       {/* ════════════════════════════
           CLOSING STRIP

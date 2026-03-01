@@ -65,20 +65,32 @@ export default function StandingsTable() {
               {standingData.table.map((row) => (
                 <tr
                   key={row.pos}
-                  className={`border-b border-[#1a1a1a] transition-colors ${
+                  style={
                     row.isClub
-                      ? "bg-[#F7C600]/10 border-[#F7C600]/30"
-                      : "hover:bg-[#111]"
+                      ? {
+                          boxShadow:
+                            "0 0 18px 2px rgba(247,198,0,0.18), inset 0 0 0 1px rgba(247,198,0,0.25)",
+                          background:
+                            "linear-gradient(90deg, rgba(247,198,0,0.13) 0%, rgba(247,198,0,0.06) 100%)",
+                        }
+                      : {}
+                  }
+                  className={`border-b transition-colors ${
+                    row.isClub
+                      ? "border-[#F7C600]/40 border-l-[3px] border-l-[#F7C600]"
+                      : "border-[#1a1a1a] hover:bg-[#111]"
                   }`}
                 >
                   {/* Position */}
-                  <td className="py-2.5 px-3">
+                  <td className="py-3 px-3">
                     <span
                       className={`text-xs font-black w-6 h-6 flex items-center justify-center rounded ${
                         row.pos <= 2
                           ? "bg-green-500/20 text-green-400"
                           : row.pos >= 15
                           ? "bg-red-500/20 text-red-400"
+                          : row.isClub
+                          ? "bg-[#F7C600]/20 text-[#F7C600]"
                           : "text-gray-400"
                       }`}
                     >
@@ -87,7 +99,7 @@ export default function StandingsTable() {
                   </td>
 
                   {/* Team name + logo */}
-                  <td className="py-2.5 px-3">
+                  <td className="py-3 px-3">
                     <div className="flex items-center gap-2">
                       <TeamLogo
                         src={row.logo}
@@ -96,7 +108,9 @@ export default function StandingsTable() {
                       />
                       <span
                         className={`font-bold text-xs sm:text-sm ${
-                          row.isClub ? "text-[#F7C600]" : "text-white"
+                          row.isClub
+                            ? "text-[#F7C600] drop-shadow-[0_0_6px_rgba(247,198,0,0.6)]"
+                            : "text-white"
                         }`}
                       >
                         {row.team}
@@ -105,19 +119,23 @@ export default function StandingsTable() {
                   </td>
 
                   {/* Stats */}
-                  <td className="py-2.5 px-3 text-center text-gray-400 text-xs">{row.mp}</td>
-                  <td className="py-2.5 px-3 text-center text-green-400 text-xs font-semibold">{row.w}</td>
-                  <td className="py-2.5 px-3 text-center text-gray-400 text-xs">{row.d}</td>
-                  <td className="py-2.5 px-3 text-center text-red-400 text-xs font-semibold">{row.l}</td>
-                  <td className="py-2.5 px-3 text-center text-gray-400 text-xs">
+                  <td className="py-3 px-3 text-center text-gray-400 text-xs">{row.mp}</td>
+                  <td className="py-3 px-3 text-center text-green-400 text-xs font-semibold">{row.w}</td>
+                  <td className="py-3 px-3 text-center text-gray-400 text-xs">{row.d}</td>
+                  <td className="py-3 px-3 text-center text-red-400 text-xs font-semibold">{row.l}</td>
+                  <td className="py-3 px-3 text-center text-gray-400 text-xs">
                     {row.gd > 0 ? `+${row.gd}` : row.gd}
                   </td>
-                  <td
-                    className={`py-2.5 px-3 text-center font-black text-sm ${
-                      row.isClub ? "text-[#F7C600]" : "text-white"
-                    }`}
-                  >
-                    {row.pts}
+                  <td className="py-3 px-3 text-center">
+                    <span
+                      className={`font-black text-sm ${
+                        row.isClub
+                          ? "text-[#F7C600] drop-shadow-[0_0_8px_rgba(247,198,0,0.8)]"
+                          : "text-white"
+                      }`}
+                    >
+                      {row.pts}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -133,7 +151,7 @@ export default function StandingsTable() {
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-sm bg-[#F7C600]/20 inline-block" />
-            الاتحاد ببنقردان
+            الاتحاد الرياضي ببنقردان
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-sm bg-red-500/30 inline-block" />
