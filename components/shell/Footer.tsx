@@ -4,7 +4,7 @@ import SponsorLogo from "@/components/ui/SponsorLogo";
 
 const quickLinks = [
   { label: "من نحن", href: "/about" },
-  { label: "الفريق", href: "/team" },
+  //{ label: "الفريق", href: "/team" },
   { label: "الأخبار", href: "/news" },
   { label: "المكتبة الرقمية", href: "/media" },
   { label: "الذكرى 90", href: "/anniversary" },

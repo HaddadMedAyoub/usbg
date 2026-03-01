@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const navLinks = [
   { label: "الرئيسية", href: "/" },
   { label: "من نحن", href: "/about" },
-  { label: "الفريق", href: "/team" },
+  //{ label: "الفريق", href: "/team" },
   { label: "الأخبار", href: "/news" },
   { label: "المكتبة الالكترونية", href: "/media" },
   { label: "المجلس", href: "/administration" },
