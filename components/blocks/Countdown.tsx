@@ -51,7 +51,7 @@ export default function Countdown() {
         </div>
 
         <h2 className="text-white text-3xl font-black mb-2">
-          90 سنة من العطاء
+          90 سنة من المجد! 
         </h2>
         <p className="text-gray-400 text-sm mb-2">الاتحاد الرياضي ببنقردان · 1936 — 2026</p>
 

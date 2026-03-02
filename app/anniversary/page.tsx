@@ -142,7 +142,7 @@ export default function AnniversaryPage() {
         <div className="relative z-[10] flex items-center gap-3 mb-10">
           <span className="h-px w-10 bg-[#F7C600]/30" />
           <p className="text-gray-300 text-sm sm:text-base font-semibold drop-shadow-[0_1px_8px_rgba(0,0,0,0.9)]">
-            فرسان الحدود — 90 عامًا من العطاء
+          فرسان الحدود — 90 عامًا من المجد 
           </p>
           <span className="h-px w-10 bg-[#F7C600]/30" />
         </div>

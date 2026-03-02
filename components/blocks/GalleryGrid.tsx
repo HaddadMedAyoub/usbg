@@ -7,7 +7,7 @@ const categories = ["الكل", "فريق", "ملعب", "تدريب", "تاري�
 
 export default function GalleryGrid() {
   const [active, setActive] = useState("الكل");
-  const [lightbox, setLightbox] = useState<null | { src: string; caption: string }>(null);
+  const [lightbox, setLightbox] = useState<null | { src: string; caption?: string }>(null);
 
   const filtered =
     active === "الكل"
@@ -44,7 +44,7 @@ export default function GalleryGrid() {
             <div className="relative w-full">
               <Image
                 src={photo.src}
-                alt={photo.caption}
+                alt={photo.caption ?? "صورة"}
                 width={600}
                 height={400}
                 className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
@@ -54,12 +54,16 @@ export default function GalleryGrid() {
 
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex flex-col items-center justify-end p-3">
-              <p className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
-                {photo.caption}
-              </p>
-              <span className="mt-2 text-[#F7C600] text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-widest uppercase">
-                {photo.category}
-              </span>
+              {photo.caption && (
+                <p className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
+                  {photo.caption}
+                </p>
+              )}
+              {photo.category && (
+                <span className="mt-2 text-[#F7C600] text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-widest uppercase">
+                  {photo.category}
+                </span>
+              )}
             </div>
 
             {/* Zoom icon */}
@@ -103,7 +107,7 @@ export default function GalleryGrid() {
           >
             <Image
               src={lightbox.src}
-              alt={lightbox.caption}
+              alt={lightbox.caption ?? "صورة"}
               width={1200}
               height={800}
               className="w-full h-auto max-h-[80dvh] object-contain rounded-xl"
@@ -111,10 +115,12 @@ export default function GalleryGrid() {
             />
           </div>
 
-          {/* Caption */}
-          <div className="mt-4 text-center" onClick={(e) => e.stopPropagation()}>
-            <p className="text-white font-bold text-sm">{lightbox.caption}</p>
-          </div>
+          {/* Caption — only renders if caption exists */}
+          {lightbox.caption && (
+            <div className="mt-4 text-center" onClick={(e) => e.stopPropagation()}>
+              <p className="text-white font-bold text-sm">{lightbox.caption}</p>
+            </div>
+          )}
         </div>
       )}
     </>

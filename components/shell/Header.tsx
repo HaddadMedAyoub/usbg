@@ -10,7 +10,7 @@ const navLinks = [
   { label: "الفريق", href: "/team" },
   { label: "الأخبار", href: "/news" },
   { href: "/store", label: "المتجر" },
-  { label: "المكتبة الارقمية", href: "/media" },
+  { label: "المكتبة الرقمية", href: "/media" },
   { label: "ادارة الجمعية ", href: "/administration" },
   { label: "اتصل بنا", href: "/contact" },
 ];
