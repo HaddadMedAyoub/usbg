@@ -36,7 +36,7 @@ export const squad: Player[] = [
     ],
   },
   {
-    number: 16, name: "Gazzeh Raed", nameAr: "رائد القزاح", position: "GK", age: 22,
+    number: 12, name: "Gazzeh Raed", nameAr: "رائد القزاح", position: "GK", age: 22,
     apps: 6, minutes: 540, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/gazzeh-raed.jpg", slug: "gazzeh-raed",
   },
@@ -79,7 +79,7 @@ export const squad: Player[] = [
     nationality: "🇹🇳", photo: "/images/players/harrabi-salah.jpg", slug: "harrabi-salah",
   },
   {
-    number: 28, name: "Chaibi Rayane", nameAr: "ريان الشايبي", position: "DEF", age: 21,
+    number: 28, name: "Chaibi Rayane", nameAr: "ريان الشايبي", position: "MID", age: 21,
     apps: 8, minutes: 209, goals: 0, assists: 0, yellowCards: 1, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/chaibi-rayane.jpg", slug: "chaibi-rayane",
   },
@@ -94,16 +94,10 @@ export const squad: Player[] = [
     nationality: "🇹🇳", photo: "/images/players/ataaakrout.jpeg", slug: "ataa-akrout",
   },
   {
-    number: 23, name: "Idris Al-Muhairssi", nameAr: "إدريس المحيرصي", position: "DEF", age: null,
+    number: 23, name: "Idris Al-Muhairssi", nameAr: "إدريس المحيرصي", position: "FWD", age: 32,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/idris-muhairssi.jpg", slug: "idris-muhairssi",
   },
-  {
-    number: null, name: "Fadi Al-Falehi", nameAr: "فادي الفالحي", position: "DEF", age: null,
-    apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
-    nationality: "🇹🇳", photo: "/images/players/fadi-falehi.jpg", slug: "fadi-falehi",
-  },
-
   // ══ الوسط ══
   {
     number: 6, name: "Bida Junior", nameAr: "جونيور بيدا", position: "MID", age: 22,
@@ -111,12 +105,12 @@ export const squad: Player[] = [
     nationality: "🇸🇳", photo: "/images/players/bida-junior.jpg", slug: "bida-junior",
   },
   {
-    number: 20, name: "Abcha Jassem", nameAr: "جاسم عبشة", position: "MID", age: 24,
+    number: 20, name: "Abcha Jassem", nameAr: "جاسم عبشة", position: "DEF", age: 24,
     apps: 6, minutes: 496, goals: 0, assists: 0, yellowCards: 1, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/jassemabcha.jpeg", slug: "abcha-jassem",
   },
   {
-    number: 17, name: "Abdi Wael", nameAr: "وائل العبدي", position: "MID", age: 22,
+    number: 17, name: "Abdi Wael", nameAr: "وائل العابدي", position: "MID", age: 22,
     apps: 5, minutes: 266, goals: 0, assists: 0, yellowCards: 1, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/abdi-wael.jpg", slug: "abdi-wael",
   },
@@ -131,7 +125,7 @@ export const squad: Player[] = [
     nationality: "🇹🇳", photo: "/images/players/ben-mcharek-ayoub.jpg", slug: "ben-mcharek-ayoub",
   },
   {
-    number: null, name: "Amri Abdallah", nameAr: "عبدالله العمري", position: "MID", age: null,
+    number: 13, name: "Amri Abdallah", nameAr: "عبدالله العامري", position: "MID", age: null,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/amri-abdallah.jpg", slug: "amri-abdallah",
   },
@@ -141,16 +135,16 @@ export const squad: Player[] = [
     nationality: "🇹🇳", photo: "/images/players/wael-salehi.jpg", slug: "wael-salehi",
   },
   {
-    number: null, name: "Qais Fadil", nameAr: "قيس فضيل", position: "MID", age: null,
+    number: null, name: "Qais Fadil", nameAr: "قيس فضيل", position: "FWD", age: 25,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/qais-fadil.jpg", slug: "qais-fadil",
   },
   {
-    number: null, name: "Mustapha", nameAr: "مصطفى ", position: "MID", age: null,
+    number: 15, name: "Mustapha samp", nameAr: "مصطفى سامب ", position: "MID", age: 21,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇸🇳", photo: "/images/players/mustapha-samp.jpg", slug: "mustapha-samp",
   },  {
-    number: 11, name: "lamine", nameAr: "لامين", position: "FWD", age: null,
+    number: 18, name: "lamine Touray", nameAr: "لامين توراي", position: "FWD", age: 21,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "NG", photo: "/images/players/lamine.jpg", slug: "lamine-touray",
   },
@@ -167,7 +161,7 @@ export const squad: Player[] = [
     nationality: "🇹🇳", photo: "/images/players/chachia-nassim.jpg", slug: "chachia-nassim",
   },
   {
-    number: 11, name: "Kada Zinedine", nameAr: "زين الدين قادة", position: "FWD", age: 20,
+    number: 29, name: "Kada Zinedine", nameAr: "زين الدين قادة", position: "FWD", age: 20,
     apps: 3, minutes: 121, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/kada-zinedine.jpg", slug: "kada-zinedine",
   },
@@ -187,21 +181,16 @@ export const squad: Player[] = [
     nationality: "🇹🇳", photo: "/images/players/souii-ahmed.jpg", slug: "souii-ahmed",
   },
   {
-    number: null, name: "Bouhti Anas", nameAr: "انس بوعطي", position: "FWD", age: null,
+    number: 32, name: "Bouhti Anas", nameAr: "انس بوعطي", position: "FWD", age: 21,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/bouhti-anas.jpg", slug: "bouhti-anas",
   },
   {
-    number: null, name: "Aboubacar Sidiki Leno", nameAr: "أبوبكر سيديكي لينو", position: "FWD", age: null,
-    apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
-    nationality: "🇬🇳", photo: "/images/players/aboubacar-sidiki-leno.jpg", slug: "aboubacar-sidiki-leno",
-  },
-  {
-    number: null, name: "Iskandar Abu Aisha", nameAr: "إسكندر أبو عائشة", position: "FWD", age: null,
+    number: 34, name: "Iskandar Abu Aisha", nameAr: "إسكندر أبو عائشة", position: "DEF", age: 25,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/iskandar-abu-aisha.jpg", slug: "iskandar-abu-aisha",
   },  {
-    number: 12, name: "daniel Oboh", nameAr: "دانييل أوبوه", position: "FWD", age: null,
+    number: 30, name: "daniel Oboh", nameAr: "دانييل أوبوه", position: "MID", age: 22,
     apps: 0, minutes: 0, goals: 0, assists: 0, yellowCards: 0, redCards: 0,
     nationality: "🇹🇳", photo: "/images/players/daniel-oboh.jpg", slug: "daniel-oboh",
   },

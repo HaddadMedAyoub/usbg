@@ -6,6 +6,9 @@ import matchesData from "@/content/matches.json";
 import StandingsTable from "@/components/blocks/StandingsTable";
 import MatchesSection from "@/components/MatchesSection";
 import { getAllNews } from "@/lib/content";
+import LineupSection from '@/components/blocks/LineupSection'
+import ArticlesSlider from "@/components/blocks/ArticlesSlider";
+import WeatherStrip from "@/components/blocks/WeatherBadge";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("ar-TN", {
@@ -87,72 +90,22 @@ export default function HomePage() {
         </div>
       </section>
 
-
+      <WeatherStrip />
+        
       {/* ═══ COUNTDOWN ═══ */}
       <Countdown />
 
       {/* ═══ MATCHES ═══ */}
       <MatchesSection />
 
-
+      {/* ═══ LINEUP ═══ */}
+      {/* <LineupSection /> */}
+      
       <StandingsTable />
 
       {/* ═══ NEWS ═══ */}
-      <section className="py-14 px-4 bg-[#0a0a0a]">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="section-title">آخر الأخبار</h2>
-            <Link href="/news" className="text-[#F7C600] text-sm font-semibold hover:underline">
-              كل الأخبار ←
-            </Link>
-          </div>
+      <ArticlesSlider />
 
-          {latestNews.length === 0 ? (
-            <p className="text-gray-500 text-sm text-center py-10">لا توجد أخبار بعد.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {latestNews.map((article) => (
-                <Link
-                  key={article.slug}
-                  href={`/news/${article.slug}`}
-                  className="card-dark rounded-xl overflow-hidden group hover:border-[#F7C600] transition-colors"
-                >
-                  {/* Thumbnail */}
-                  <div className="relative h-44 bg-[#222] flex items-center justify-center">
-                    {article.frontmatter.coverImage ? (
-                      <Image
-                        src={article.frontmatter.coverImage}
-                        alt={article.frontmatter.title ?? ""}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <span className="text-[#F7C600] text-3xl font-black opacity-30">
-                        US
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Text */}
-                  <div className="p-4">
-                    <p className="text-gray-500 text-xs mb-2">
-                      {article.frontmatter.date}
-                    </p>
-                    <h3 className="text-white font-bold text-sm leading-snug mb-2 group-hover:text-[#F7C600] transition-colors">
-                      {article.frontmatter.title}
-                    </h3>
-                    {article.frontmatter.excerpt ? (
-                      <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
-                        {article.frontmatter.excerpt}
-                      </p>
-                    ) : null}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
 
 
       {/* ═══ ABOUT STRIP ═══ */}

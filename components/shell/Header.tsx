@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
   { label: "الرئيسية", href: "/" },
+  { label: "الداعمون", href: "/donors" } ,
   { label: "من نحن", href: "/about" },
   { label: "الفريق", href: "/team" },
   { label: "الأخبار", href: "/news" },
@@ -14,6 +15,7 @@ const navLinks = [
   { label: "ادارة الجمعية ", href: "/administration" },
   { label: "اتصل بنا", href: "/contact" },
 ];
+
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);

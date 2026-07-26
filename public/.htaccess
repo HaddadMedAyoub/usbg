@@ -1,0 +1,17 @@
+Options -MultiViews -Indexes
+DirectoryIndex index.html
+
+RewriteEngine On
+
+RewriteRule ^_next/ - [L]
+
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+[^/])$ /$1/ [R=301,L]
+
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}index.html -f
+RewriteRule ^ %{REQUEST_URI}index.html [L]
+
+RewriteRule ^ /index.html [L]

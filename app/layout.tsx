@@ -17,8 +17,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar" dir="rtl" className={cairo.variable}>
-      <body className="min-h-dvh bg-black text-white antialiased" style={{ fontFamily: "var(--font-cairo), sans-serif" }}>
+    <html lang="ar" dir="rtl" className={cairo.variable} 
+    suppressHydrationWarning>
+      <body 
+        className="min-h-dvh bg-black text-white antialiased" 
+        style={{ fontFamily: "var(--font-cairo), sans-serif" }}
+        suppressHydrationWarning  
+      >
         <Header />
         <main className="w-full">{children}</main>
         <Footer />
@@ -26,3 +31,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
