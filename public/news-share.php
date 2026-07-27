@@ -1,52 +1,36 @@
 <?php
 /**
- * news-share.php — Article delivery + social-crawler Open Graph tags.
+ * news-share.php — Serves the real article page to everyone, with the article's
+ * Open Graph tags injected into <head> so social crawlers show a rich preview.
  *
- * .htaccess routes ALL /news/article/ requests here. This script then:
- *   - Humans      -> streams the real static app (news/article/index.html)
- *                    unchanged, so the page renders exactly as before.
- *   - Social bots -> returns a lightweight page carrying real
- *                    og:title/description/image fetched from Supabase.
+ * .htaccess routes every /news/article/ request here. We read the real static
+ * app file (via __DIR__, which is this site's root regardless of DOCUMENT_ROOT),
+ * inject og:/twitter: tags fetched from Supabase, and stream it. Humans get the
+ * full working app; bots (no JS) read the tags. No redirect -> no loop.
  *
- * There is NO HTTP redirect anywhere, so a redirect loop is impossible even
- * if the host ignores user-agent rules. The anon key below is the same public,
- * read-only key already shipped in the browser JS bundle (protected by RLS).
+ * The anon key is the same public, read-only key already in the browser bundle.
  */
 
 $SUPABASE_URL  = 'https://utphofcqgzyzbxpkwnmj.supabase.co';
 $SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0cGhvZmNxZ3p5emJ4cGt3bm1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0OTQyMDIsImV4cCI6MjA4ODA3MDIwMn0.fyGgiHL7HbzIFTkFnQ-8RZXt3_toUNg9y144vQdRHjI';
 $SITE_NAME     = 'الاتحاد الرياضي ببنقردان';
 
-$ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-$isBot = preg_match(
-    '/(facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Telegram|Discordbot|Pinterest|redditbot|Applebot|vkShare|SkypeUriPreview|Skype|Googlebot|bingbot|Embedly|Iframely|Google-InspectionTool|MetaInspector)/i',
-    $ua
-);
-
-$appFile = $_SERVER['DOCUMENT_ROOT'] . '/news/article/index.html';
-
-/* ---------- Human path: serve the real app unchanged (no redirect) ---------- */
-if (!$isBot && is_readable($appFile)) {
-    header('Content-Type: text/html; charset=utf-8');
-    readfile($appFile);
-    exit;
-}
-
-/* ---------- Bot path (and human fallback): build Open Graph tags ---------- */
 $host   = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'usbenguerdane.tn';
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $origin = $scheme . '://' . $host;
 $slug   = isset($_GET['slug']) ? trim($_GET['slug']) : '';
 
+/* ---------- Defaults (used if no slug / not found) ---------- */
 $title       = 'أخبار الاتحاد الرياضي ببنقردان';
 $description = 'فرسان الحدود — 90 عامًا من المجد';
 $image       = $origin . '/brand/logo.png';
 $canonical   = $origin . '/news/article/?slug=' . rawurlencode($slug);
 
+/* ---------- Fetch the article from Supabase ---------- */
 if ($slug !== '') {
     $endpoint = $SUPABASE_URL . '/rest/v1/articles'
         . '?slug=eq.' . rawurlencode($slug)
-        . '&select=title_ar,excerpt_ar,image&limit=1';
+        . '&select=title_ar,excerpt_ar,content_ar,image&limit=1';
 
     $body = false;
 
@@ -76,37 +60,64 @@ if ($slug !== '') {
         $rows = json_decode($body, true);
         if (is_array($rows) && count($rows) > 0) {
             $a = $rows[0];
-            if (!empty($a['title_ar']))   $title       = $a['title_ar'];
-            if (!empty($a['excerpt_ar'])) $description = $a['excerpt_ar'];
-            if (!empty($a['image']))      $image       = $a['image'];
+            if (!empty($a['title_ar'])) $title = $a['title_ar'];
+            if (!empty($a['image']))    $image = $a['image'];
+
+            if (!empty($a['excerpt_ar'])) {
+                $description = $a['excerpt_ar'];
+            } elseif (!empty($a['content_ar'])) {
+                // No excerpt: derive a clean snippet from the article body.
+                $plain = trim(preg_replace('/\s+/u', ' ', strip_tags($a['content_ar'])));
+                if ($plain !== '') {
+                    $description = mb_substr($plain, 0, 180, 'UTF-8');
+                    if (mb_strlen($plain, 'UTF-8') > 180) $description .= '…';
+                }
+            }
         }
     }
 }
 
 function e($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+
+/* ---------- Build the Open Graph block ---------- */
+$og = "\n"
+    . '<meta property="og:type" content="article">' . "\n"
+    . '<meta property="og:site_name" content="' . e($SITE_NAME) . '">' . "\n"
+    . '<meta property="og:locale" content="ar_AR">' . "\n"
+    . '<meta property="og:title" content="' . e($title) . '">' . "\n"
+    . '<meta property="og:description" content="' . e($description) . '">' . "\n"
+    . '<meta property="og:image" content="' . e($image) . '">' . "\n"
+    . '<meta property="og:url" content="' . e($canonical) . '">' . "\n"
+    . '<meta name="twitter:card" content="summary_large_image">' . "\n"
+    . '<meta name="twitter:title" content="' . e($title) . '">' . "\n"
+    . '<meta name="twitter:description" content="' . e($description) . '">' . "\n"
+    . '<meta name="twitter:image" content="' . e($image) . '">' . "\n";
+
+/* ---------- Serve the real app with tags injected ---------- */
+$appFile = __DIR__ . '/news/article/index.html';
+$html = @file_get_contents($appFile);
+
+if ($html !== false && stripos($html, '</head>') !== false) {
+    // Give bots an article-specific <title>, then inject the OG block.
+    $html = preg_replace('/<title>.*?<\/title>/is', '<title>' . e($title) . '</title>', $html, 1);
+    $pos  = stripos($html, '</head>');
+    $html = substr($html, 0, $pos) . $og . substr($html, $pos);
+
+    header('Content-Type: text/html; charset=utf-8');
+    echo $html;
+    exit;
+}
+
+/* ---------- Fallback: minimal preview page if the app file is unreadable ---------- */
 header('Content-Type: text/html; charset=utf-8');
 ?>
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= e($description) ?>">
-
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="<?= e($SITE_NAME) ?>">
-<meta property="og:locale" content="ar_AR">
-<meta property="og:title" content="<?= e($title) ?>">
-<meta property="og:description" content="<?= e($description) ?>">
-<meta property="og:image" content="<?= e($image) ?>">
-<meta property="og:url" content="<?= e($canonical) ?>">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="<?= e($title) ?>">
-<meta name="twitter:description" content="<?= e($description) ?>">
-<meta name="twitter:image" content="<?= e($image) ?>">
-
+<?= $og ?>
 <link rel="canonical" href="<?= e($canonical) ?>">
 </head>
 <body style="background:#0b0b0b;color:#fff;font-family:sans-serif;text-align:center;padding:40px">
