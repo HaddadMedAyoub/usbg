@@ -49,9 +49,10 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
           local-dir: ./out/
-          # cPanel usually supports secure FTP; if plain FTP is required,
-          # change this to: protocol: ftp
-          protocol: ftps
+          # Plain FTP: the host's firewall can't open passive data ports over
+          # encrypted FTPS, so FTPS times out on transfer. Plain FTP works
+          # because the firewall's FTP helper can track the passive connection.
+          protocol: ftp
           # Don't let the sync wipe these server-side files:
           exclude: |
             **/.git*
