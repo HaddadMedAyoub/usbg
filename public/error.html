@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حدث خطأ — الاتحاد الرياضي ببنقردان</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --gold: #F7C600; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+    background: #000;
+    color: #fff;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ambient gold glow */
+  .glow {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: 720px; height: 720px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(247,198,0,0.10) 0%, rgba(247,198,0,0) 62%);
+    filter: blur(40px);
+    pointer-events: none;
+    animation: breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: .55; transform: translate(-50%,-50%) scale(1); }
+    50%      { opacity: 1;   transform: translate(-50%,-50%) scale(1.08); }
+  }
+
+  /* faint dotted texture */
+  .dots {
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 22px 22px;
+    pointer-events: none;
+    mask-image: radial-gradient(circle at center, #000 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at center, #000 0%, transparent 75%);
+  }
+
+  /* giant ghost glyph */
+  .ghost {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -54%);
+    font-weight: 900;
+    font-size: clamp(16rem, 46vw, 34rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(247,198,0,0.05);
+    user-select: none; pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .card {
+    position: relative;
+    z-index: 10;
+    max-width: 480px;
+    width: 100%;
+    animation: rise .7s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo-wrap {
+    width: 72px; height: 72px;
+    margin: 0 auto 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 20px;
+    background: rgba(247,198,0,0.06);
+    border: 1px solid rgba(247,198,0,0.18);
+    box-shadow: 0 0 50px rgba(247,198,0,0.12);
+  }
+  .logo-wrap img { width: 46px; height: 46px; object-fit: contain; }
+  .logo-fallback { color: var(--gold); font-weight: 900; font-size: 20px; letter-spacing: .06em; }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: 18px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(247,198,0,0.08);
+    border: 1px solid rgba(247,198,0,0.2);
+  }
+  .status .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 0 rgba(247,198,0,0.6);
+    animation: pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(247,198,0,0.55); }
+    70%  { box-shadow: 0 0 0 10px rgba(247,198,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(247,198,0,0); }
+  }
+  .status span { color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: .25em; }
+
+  h1 {
+    font-size: clamp(1.9rem, 7vw, 2.9rem);
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  h1 .accent { color: var(--gold); }
+
+  p.lead {
+    color: #9a9a9a;
+    font-size: 15px;
+    line-height: 2;
+    margin: 0 auto 34px;
+    max-width: 400px;
+  }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 28px;
+    border-radius: 14px;
+    font-weight: 900; font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .2s ease;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--gold); color: #000;
+    box-shadow: 0 0 30px rgba(247,198,0,0.22);
+  }
+  .btn-primary:hover { background: #fff; box-shadow: 0 0 40px rgba(247,198,0,0.45); }
+  .btn-ghost {
+    background: transparent; color: #cfcfcf;
+    border-color: rgba(255,255,255,0.14);
+  }
+  .btn-ghost:hover { border-color: rgba(247,198,0,0.4); color: #fff; background: rgba(255,255,255,0.04); }
+
+  .foot {
+    margin-top: 44px;
+    color: #555;
+    font-size: 12px;
+    letter-spacing: .04em;
+  }
+  .foot b { color: var(--gold); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="dots"></div>
+  <div class="ghost" aria-hidden="true">!</div>
+
+  <main class="card">
+    <div class="logo-wrap">
+      <img src="/brand/logo.png" alt="USBG"
+           onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'logo-fallback\'>USBG</span>')">
+    </div>
+
+    <div class="status">
+      <span class="dot"></span>
+      <span>خطأ مؤقت</span>
+    </div>
+
+    <h1>عذرًا، حدث <span class="accent">خطأ ما</span></h1>
+
+    <p class="lead">
+      يبدو أن هناك مشكلة مؤقتة في الاتصال بالخادم.
+      لا تقلق — الأمر ليس من جهتك. حاول تحديث الصفحة بعد لحظات.
+    </p>
+
+    <div class="actions">
+      <a href="javascript:location.reload()" class="btn btn-primary">↻ إعادة المحاولة</a>
+      <a href="/" class="btn btn-ghost">العودة للرئيسية</a>
+    </div>
+
+    <p class="foot">
+      <b>الاتحاد الرياضي ببنقردان</b> · فرسان الحدود منذ 1936
+    </p>
+  </main>
+</body>
+</html>

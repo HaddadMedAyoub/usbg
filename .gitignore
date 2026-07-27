@@ -46,3 +46,5 @@ build
 .cache
 .DS_Store
 .env
+# local image backups (not deployed)
+/backup-original-images/

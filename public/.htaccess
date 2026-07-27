@@ -1,7 +1,21 @@
 Options -MultiViews -Indexes
 DirectoryIndex index.html
 
+# ── Branded error pages ──
+ErrorDocument 404 /404.html
+ErrorDocument 500 /error.html
+ErrorDocument 502 /error.html
+ErrorDocument 503 /error.html
+ErrorDocument 504 /error.html
+
 RewriteEngine On
+
+# ── Article social-preview handler ──
+# Route every article URL through news-share.php. The PHP decides: humans get
+# the real app streamed unchanged, social bots get Open Graph tags. The gate
+# lives in PHP (reliable) rather than here, and nothing redirects — so no loop.
+RewriteCond %{REQUEST_URI} ^/news/article/?$ [NC]
+RewriteRule ^ /news-share.php [L]
 
 RewriteRule ^_next/ - [L]
 
@@ -14,4 +28,5 @@ RewriteRule ^(.+[^/])$ /$1/ [R=301,L]
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}index.html -f
 RewriteRule ^ %{REQUEST_URI}index.html [L]
 
-RewriteRule ^ /index.html [L]
+# Unknown URLs: let Apache return a real 404 (served as the branded /404.html
+# via ErrorDocument above) instead of silently showing the homepage.
