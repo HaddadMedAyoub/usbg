@@ -53,7 +53,7 @@ const emptyForm: ArticleForm = {
     video_url: "",
 };
 export default function AdminDashboard() {
-    const [tab, setTab] = useState<'articles' | 'lineup' | 'donors'>('articles')
+    const [tab, setTab] = useState<'articles' | 'lineup' | 'donors' | 'orders'>('articles')
     const [articles, setArticles] = useState<Article[]>([])
     const [loading, setLoading] = useState(false)
     const [uploadingImage, setUploadingImage] = useState(false)
@@ -62,6 +62,7 @@ export default function AdminDashboard() {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [form, setForm] = useState<ArticleForm>(emptyForm);
     const [players, setPlayers] = useState<any[]>([])
+    const [orders, setOrders] = useState<any[]>([])
     const [selectedPlayers, setSelectedPlayers] = useState<any[]>(Array(11).fill(null))
     const [lineup, setLineup] = useState({
         opponent: '', opponent_ar: '', match_date: '', formation: '4-3-3', players: [] as any[]
@@ -80,6 +81,7 @@ export default function AdminDashboard() {
                 setSessionReady(true)
                 fetchArticles()
                 fetchPlayers()
+                fetchOrders()
             }
         })
     }, [])
@@ -105,6 +107,26 @@ export default function AdminDashboard() {
             .order('position', { ascending: true })
         console.log('players:', data, 'error:', error)
         setPlayers(data || [])
+    }
+
+    async function fetchOrders() {
+        const { data, error } = await supabase
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false })
+        if (error) { console.error(error); return }
+        setOrders(data || [])
+    }
+
+    async function updateOrderStatus(id: string, status: string) {
+        await supabase.from('orders').update({ status }).eq('id', id)
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o))
+    }
+
+    async function deleteOrder(id: string) {
+        if (!confirm('حذف هذا الطلب؟')) return
+        await supabase.from('orders').delete().eq('id', id)
+        setOrders(prev => prev.filter(o => o.id !== id))
     }
 
 
@@ -336,6 +358,20 @@ export default function AdminDashboard() {
                         }`}
                 >
                     💛 الداعمون
+                </button>
+                <button
+                    onClick={() => { setTab('orders'); fetchOrders() }}
+                    className={`px-5 py-4 text-sm font-bold border-b-2 transition-colors ${tab === 'orders'
+                        ? 'border-[#F7C600] text-[#F7C600]'
+                        : 'border-transparent text-gray-500 hover:text-gray-300'
+                        }`}
+                >
+                    🛒 الطلبات
+                    {orders.filter(o => o.status === 'new').length > 0 && (
+                        <span className="mr-1.5 inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-[#F7C600] text-black text-[10px] font-black">
+                            {orders.filter(o => o.status === 'new').length}
+                        </span>
+                    )}
                 </button>
 
             </div>
@@ -749,6 +785,65 @@ export default function AdminDashboard() {
                 )}
 
                 {tab === 'donors' && <DonorsTab />}
+
+                {/* ── ORDERS TAB ── */}
+                {tab === 'orders' && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-gray-500 text-xs">{orders.length} طلب</p>
+                            <button onClick={fetchOrders} className="text-gray-400 text-xs border border-[#2a2a2a] px-3 py-1.5 rounded-xl hover:border-[#F7C600]/40 hover:text-white transition">
+                                تحديث
+                            </button>
+                        </div>
+
+                        {orders.length === 0 ? (
+                            <div className="text-center py-16 text-gray-600 text-sm">لا توجد طلبات بعد</div>
+                        ) : (
+                            orders.map((o) => (
+                                <div key={o.id} className="rounded-2xl border border-[#1e1e1e] bg-[#111] p-5">
+                                    <div className="flex items-start justify-between gap-4 mb-3">
+                                        <div>
+                                            <p className="text-[#F7C600] font-black text-sm">{o.ref || String(o.id).slice(0, 8)}</p>
+                                            <p className="text-gray-600 text-[11px] mt-0.5">{new Date(o.created_at).toLocaleString('ar-TN')}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2 shrink-0">
+                                            <select
+                                                value={o.status}
+                                                onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                                                className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-[#F7C600]/40"
+                                            >
+                                                <option value="new">🟡 جديد</option>
+                                                <option value="confirmed">🔵 مؤكد</option>
+                                                <option value="delivered">🟢 تم التسليم</option>
+                                                <option value="cancelled">🔴 ملغى</option>
+                                            </select>
+                                            <button onClick={() => deleteOrder(o.id)} className="text-red-400 text-xs hover:text-red-300">حذف</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs mb-3">
+                                        <span><span className="text-gray-600">الاسم:</span> <span className="text-white">{o.customer_name}</span></span>
+                                        <a href={`tel:${o.customer_phone}`} className="text-[#F7C600]" dir="ltr">{o.customer_phone}</a>
+                                        {o.customer_city && <span><span className="text-gray-600">المدينة:</span> <span className="text-white">{o.customer_city}</span></span>}
+                                    </div>
+
+                                    <div className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] p-3 flex flex-col gap-1">
+                                        {(o.items || []).map((it: any, idx: number) => (
+                                            <div key={idx} className="flex justify-between text-xs">
+                                                <span className="text-gray-400">{it.name}{it.size ? ` · ${it.size}` : ''} ×{it.qty}</span>
+                                                <span className="text-white">{it.price * it.qty} TND</span>
+                                            </div>
+                                        ))}
+                                        <div className="flex justify-between border-t border-[#1a1a1a] pt-1 mt-1">
+                                            <span className="text-gray-500 text-xs">المجموع</span>
+                                            <span className="text-[#F7C600] font-black text-sm">{o.total} TND</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
 
             </div>
         </div>

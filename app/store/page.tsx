@@ -1,5 +1,10 @@
 "use client";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+// ⚠️ Replace with the club's WhatsApp order number — international format,
+// digits only, no "+". Tunisia = 216 followed by 8 digits, e.g. 21620123456
+const ORDER_PHONE = "21627113285";
 
 const categories = [
   { id: "all",          label: "الكل",         icon: "⚡" },
@@ -104,6 +109,14 @@ export default function StorePage() {
   const [selectedSize, setSelectedSize]       = useState<string | null>(null);
   const [addedId, setAddedId]                 = useState<number | null>(null);
 
+  // Checkout
+  const [showCheckout, setShowCheckout]       = useState(false);
+  const [custName, setCustName]               = useState("");
+  const [custPhone, setCustPhone]             = useState("");
+  const [custCity, setCustCity]               = useState("");
+  const [placing, setPlacing]                 = useState(false);
+  const [confirmRef, setConfirmRef]           = useState<string | null>(null);
+
   const filtered = activeCategory === "all"
     ? products
     : products.filter((p) => p.category === activeCategory);
@@ -131,6 +144,67 @@ export default function StorePage() {
     setCart((c) => c.filter((i) => !(i.product.id === productId && i.size === size)));
   }
 
+  async function placeOrder() {
+    if (!custName.trim() || !custPhone.trim()) {
+      alert("الرجاء إدخال الاسم ورقم الهاتف");
+      return;
+    }
+    if (cart.length === 0) return;
+
+    setPlacing(true);
+    const ref = "USBG-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+    const items = cart.map((i) => ({
+      id: i.product.id,
+      name: i.product.name,
+      size: i.size,
+      qty: i.qty,
+      price: i.product.price,
+    }));
+
+    try {
+      const { error } = await supabase.from("orders").insert([
+        {
+          ref,
+          customer_name: custName.trim(),
+          customer_phone: custPhone.trim(),
+          customer_city: custCity.trim() || null,
+          items,
+          total: totalPrice,
+          status: "new",
+        },
+      ]);
+      if (error) throw error;
+
+      // Build a WhatsApp order summary for an instant ping to the club.
+      const lines = cart.map(
+        (i) =>
+          `• ${i.product.name}${i.size ? ` (مقاس ${i.size})` : ""} ×${i.qty} — ${i.product.price * i.qty} TND`
+      );
+      const msg =
+        `🛒 طلب جديد من متجر USBG\n` +
+        `رقم الطلب: ${ref}\n\n` +
+        `${lines.join("\n")}\n\n` +
+        `المجموع: ${totalPrice} TND\n` +
+        `الدفع: عند الاستلام\n\n` +
+        `الاسم: ${custName.trim()}\n` +
+        `الهاتف: ${custPhone.trim()}` +
+        (custCity.trim() ? `\nالمدينة: ${custCity.trim()}` : "");
+      window.open(`https://wa.me/${ORDER_PHONE}?text=${encodeURIComponent(msg)}`, "_blank");
+
+      setConfirmRef(ref);
+      setCart([]);
+      setShowCheckout(false);
+      setCartOpen(false);
+      setCustName("");
+      setCustPhone("");
+      setCustCity("");
+    } catch {
+      alert("تعذّر إرسال الطلب. حاول مرة أخرى.");
+    } finally {
+      setPlacing(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white pb-32">
 
@@ -150,7 +224,7 @@ export default function StorePage() {
               <div className="flex items-center gap-2 mb-4">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7C600]/10 border border-[#F7C600]/20 text-[#F7C600] text-[10px] font-black">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#F7C600] animate-pulse" />
-                  قريباً
+                  متوفر الآن
                 </span>
                 <span className="text-gray-600 text-[10px] uppercase tracking-widest">المتجر الرسمي</span>
               </div>
@@ -285,24 +359,13 @@ export default function StorePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#F7C600]/5 via-transparent to-transparent pointer-events-none" />
           <div className="relative z-10">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F7C600]/10 border border-[#F7C600]/20 text-[#F7C600] text-xs font-black mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F7C600] animate-pulse" />
-              الإطلاق قريباً
+              🛒 كيف تطلب
             </span>
-            <h2 className="text-white font-black text-2xl sm:text-4xl mb-3">كن أول من يعلم</h2>
+            <h2 className="text-white font-black text-2xl sm:text-4xl mb-3">اطلب الآن، وادفع عند الاستلام</h2>
             <p className="text-gray-500 text-sm leading-7 max-w-md mx-auto mb-8">
-              نعمل على تجهيز المتجر الرسمي لمشجعي الاتحاد الرياضي ببنقردان. سيتوفر قريباً مع أفضل المنتجات الرسمية.
+              أضف منتجاتك إلى السلة، أكمل الطلب بإدخال اسمك ورقمك، وستتواصل معك إدارة النادي لتأكيد الطلب وترتيب التوصيل. الدفع يكون نقداً عند استلام طلبك.
             </p>
-            <div className="flex gap-2 max-w-sm mx-auto">
-              <input
-                type="email"
-                placeholder="أدخل بريدك الإلكتروني"
-                className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-xs text-white placeholder:text-gray-700 text-right outline-none focus:border-[#F7C600]/30 transition-colors"
-              />
-              <button className="px-5 py-3 rounded-2xl bg-[#F7C600] text-black text-xs font-black hover:bg-white transition-colors shrink-0">
-                أخبرني
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-4 mt-10 pt-8 border-t border-[#1a1a1a]">
+            <div className="grid grid-cols-3 gap-4 mt-4 pt-8 border-t border-[#1a1a1a]">
               {[
                 { icon: "🚚", label: "توصيل سريع",   sub: "لجميع أنحاء تونس" },
                 { icon: "✅", label: "منتجات رسمية", sub: "بختم النادي الرسمي" },
@@ -474,8 +537,11 @@ export default function StorePage() {
                   <span className="text-gray-500 text-sm">المجموع</span>
                   <span className="text-[#F7C600] font-black text-lg">{totalPrice} TND</span>
                 </div>
-                <button className="w-full py-4 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors">
-                  إتمام الطلب ← (قريباً)
+                <button
+                  onClick={() => setShowCheckout(true)}
+                  className="w-full py-4 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors"
+                >
+                  إتمام الطلب ←
                 </button>
                 <button
                   onClick={() => setCart([])}
@@ -485,6 +551,127 @@ export default function StorePage() {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ══ Checkout Modal ══ */}
+      {showCheckout && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm px-4 pb-4"
+          onClick={() => !placing && setShowCheckout(false)}
+        >
+          <div
+            className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl max-h-[92vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-5 border-b border-[#1a1a1a]">
+              <div>
+                <h3 className="text-white font-black text-lg">إتمام الطلب</h3>
+                <p className="text-gray-600 text-xs mt-0.5">{totalItems} منتج · {totalPrice} TND</p>
+              </div>
+              <button
+                onClick={() => !placing && setShowCheckout(false)}
+                className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-gray-500 hover:text-white text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-5 overflow-y-auto flex flex-col gap-4">
+              {/* Order summary */}
+              <div className="rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-4 flex flex-col gap-2">
+                {cart.map((item, i) => (
+                  <div key={i} className="flex justify-between text-xs">
+                    <span className="text-gray-400 truncate pl-2">
+                      {item.product.name}{item.size ? ` · ${item.size}` : ""} ×{item.qty}
+                    </span>
+                    <span className="text-white font-bold shrink-0">{item.product.price * item.qty} TND</span>
+                  </div>
+                ))}
+                <div className="flex justify-between border-t border-[#1a1a1a] pt-2 mt-1">
+                  <span className="text-gray-500 text-xs">المجموع</span>
+                  <span className="text-[#F7C600] font-black">{totalPrice} TND</span>
+                </div>
+              </div>
+
+              {/* Customer form */}
+              <div>
+                <label className="text-gray-500 text-xs block mb-1">الاسم الكامل *</label>
+                <input
+                  value={custName}
+                  onChange={(e) => setCustName(e.target.value)}
+                  className="w-full bg-[#111] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-sm text-white text-right outline-none focus:border-[#F7C600]/40"
+                  placeholder="اسمك الكامل"
+                />
+              </div>
+              <div>
+                <label className="text-gray-500 text-xs block mb-1">رقم الهاتف *</label>
+                <input
+                  value={custPhone}
+                  onChange={(e) => setCustPhone(e.target.value)}
+                  type="tel"
+                  dir="ltr"
+                  className="w-full bg-[#111] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-sm text-white text-right outline-none focus:border-[#F7C600]/40"
+                  placeholder="+216 ..."
+                />
+              </div>
+              <div>
+                <label className="text-gray-500 text-xs block mb-1">المدينة / العنوان</label>
+                <input
+                  value={custCity}
+                  onChange={(e) => setCustCity(e.target.value)}
+                  className="w-full bg-[#111] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-sm text-white text-right outline-none focus:border-[#F7C600]/40"
+                  placeholder="بنقردان، مدنين..."
+                />
+              </div>
+
+              {/* Payment note */}
+              <div className="flex items-center gap-3 rounded-2xl border border-[#F7C600]/20 bg-[#F7C600]/5 p-4">
+                <span className="text-xl">💵</span>
+                <div>
+                  <p className="text-white font-bold text-sm">الدفع عند الاستلام</p>
+                  <p className="text-gray-500 text-[11px] mt-0.5 leading-5">ستتواصل معك إدارة النادي لتأكيد الطلب وترتيب التوصيل.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-5 border-t border-[#1a1a1a]">
+              <button
+                onClick={placeOrder}
+                disabled={placing}
+                className="w-full py-4 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {placing ? "جارٍ الإرسال..." : "تأكيد الطلب عبر واتساب"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══ Order Confirmation ══ */}
+      {confirmRef && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 backdrop-blur-sm px-4"
+          onClick={() => setConfirmRef(null)}
+        >
+          <div
+            className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center text-3xl">✅</div>
+            <h3 className="text-white font-black text-xl mb-2">تم استلام طلبك</h3>
+            <p className="text-gray-400 text-sm mb-3">شكراً لك! رقم طلبك هو:</p>
+            <p className="text-[#F7C600] font-black text-lg tracking-wider mb-5">{confirmRef}</p>
+            <p className="text-gray-500 text-xs leading-6 mb-6">
+              ستتواصل معك إدارة النادي عبر الهاتف لتأكيد الطلب وترتيب التوصيل، والدفع عند الاستلام.
+            </p>
+            <button
+              onClick={() => setConfirmRef(null)}
+              className="w-full py-3 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors"
+            >
+              تم
+            </button>
           </div>
         </div>
       )}
