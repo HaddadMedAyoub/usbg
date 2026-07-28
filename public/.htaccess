@@ -8,6 +8,20 @@ ErrorDocument 502 /error.html
 ErrorDocument 503 /error.html
 ErrorDocument 504 /error.html
 
+# ── Don't cache HTML / dynamic pages ──
+# Content is fetched from Supabase at runtime, so caching the HTML shell causes
+# stale pages after every deploy (and stale social previews). Disable the
+# LiteSpeed page cache and make browsers revalidate HTML. Hashed /_next assets
+# keep their own long-cache headers and are unaffected.
+<IfModule LiteSpeed>
+  CacheDisable public /
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
 RewriteEngine On
 
 # ── Article social-preview handler ──
