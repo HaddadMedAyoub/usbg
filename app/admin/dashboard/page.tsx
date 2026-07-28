@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import DonorsTab from '../DonorsTab'
+import ProductsTab from '../ProductsTab'
 import RichTextEditor from '@/components/RichTextEditor'
 import ArticleContent from "@/components/ArticleContent";
 type Article = {
@@ -53,7 +54,7 @@ const emptyForm: ArticleForm = {
     video_url: "",
 };
 export default function AdminDashboard() {
-    const [tab, setTab] = useState<'articles' | 'lineup' | 'donors' | 'orders'>('articles')
+    const [tab, setTab] = useState<'articles' | 'lineup' | 'donors' | 'orders' | 'products'>('articles')
     const [articles, setArticles] = useState<Article[]>([])
     const [loading, setLoading] = useState(false)
     const [uploadingImage, setUploadingImage] = useState(false)
@@ -63,6 +64,7 @@ export default function AdminDashboard() {
     const [form, setForm] = useState<ArticleForm>(emptyForm);
     const [players, setPlayers] = useState<any[]>([])
     const [orders, setOrders] = useState<any[]>([])
+    const [productCount, setProductCount] = useState(0)
     const [selectedPlayers, setSelectedPlayers] = useState<any[]>(Array(11).fill(null))
     const [lineup, setLineup] = useState({
         opponent: '', opponent_ar: '', match_date: '', formation: '4-3-3', players: [] as any[]
@@ -82,6 +84,7 @@ export default function AdminDashboard() {
                 fetchArticles()
                 fetchPlayers()
                 fetchOrders()
+                fetchProductCount()
             }
         })
     }, [])
@@ -116,6 +119,11 @@ export default function AdminDashboard() {
             .order('created_at', { ascending: false })
         if (error) { console.error(error); return }
         setOrders(data || [])
+    }
+
+    async function fetchProductCount() {
+        const { count } = await supabase.from('products').select('*', { count: 'exact', head: true })
+        setProductCount(count || 0)
     }
 
     async function updateOrderStatus(id: string, status: string) {
@@ -337,7 +345,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex border-b border-[#1a1a1a] px-6">
+            <div className="flex border-b border-[#1a1a1a] px-6 overflow-x-auto scrollbar-hide [&>button]:shrink-0">
                 <button
                     onClick={() => { setTab('articles'); setView('list') }}
                     className={`px-5 py-4 text-sm font-bold border-b-2 transition-colors ${tab === 'articles' ? 'border-[#F7C600] text-[#F7C600]' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
@@ -373,10 +381,35 @@ export default function AdminDashboard() {
                         </span>
                     )}
                 </button>
+                <button
+                    onClick={() => setTab('products')}
+                    className={`px-5 py-4 text-sm font-bold border-b-2 transition-colors ${tab === 'products'
+                        ? 'border-[#F7C600] text-[#F7C600]'
+                        : 'border-transparent text-gray-500 hover:text-gray-300'
+                        }`}
+                >
+                    🛍️ المتجر
+                </button>
 
             </div>
 
             <div className="max-w-4xl mx-auto p-6">
+
+                {/* ── Overview ── */}
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                    <div className="rounded-2xl border border-[#1a1a1a] bg-[#0d0d0d] px-4 py-3">
+                        <p className="text-gray-500 text-[11px]">المقالات</p>
+                        <p className="text-white font-black text-2xl mt-0.5">{articles.length}</p>
+                    </div>
+                    <div className="rounded-2xl border border-[#1a1a1a] bg-[#0d0d0d] px-4 py-3">
+                        <p className="text-gray-500 text-[11px]">المنتجات</p>
+                        <p className="text-white font-black text-2xl mt-0.5">{productCount}</p>
+                    </div>
+                    <div className="rounded-2xl border border-[#F7C600]/20 bg-[#F7C600]/[0.04] px-4 py-3">
+                        <p className="text-gray-500 text-[11px]">طلبات جديدة</p>
+                        <p className="text-[#F7C600] font-black text-2xl mt-0.5">{orders.filter(o => o.status === 'new').length}</p>
+                    </div>
+                </div>
 
                 {/* ── ARTICLES TAB ── */}
                 {tab === 'articles' && (
@@ -785,6 +818,8 @@ export default function AdminDashboard() {
                 )}
 
                 {tab === 'donors' && <DonorsTab />}
+
+                {tab === 'products' && <ProductsTab />}
 
                 {/* ── ORDERS TAB ── */}
                 {tab === 'orders' && (
