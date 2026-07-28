@@ -17,6 +17,13 @@ RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/news/article/?$ [NC]
 RewriteRule ^ /news-share.php [L]
 
+# Same social-preview handling for player and donor pages.
+RewriteCond %{REQUEST_URI} ^/team/player/?$ [NC]
+RewriteRule ^ /player-share.php [L]
+
+RewriteCond %{REQUEST_URI} ^/donors/donor/?$ [NC]
+RewriteRule ^ /donor-share.php [L]
+
 RewriteRule ^_next/ - [L]
 
 RewriteCond %{REQUEST_FILENAME} -f
