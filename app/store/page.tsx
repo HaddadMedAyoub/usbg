@@ -23,6 +23,7 @@ type Product = {
   sizes: string[] | null;
   description: string | null;
   image: string | null;
+  images: string[] | null;
   in_stock: boolean;
 };
 
@@ -54,6 +55,7 @@ export default function StorePage() {
   const [cartOpen, setCartOpen]               = useState(false);
   const [selected, setSelected]               = useState<Product | null>(null);
   const [selectedSize, setSelectedSize]       = useState<string | null>(null);
+  const [galleryImg, setGalleryImg]           = useState<string | null>(null);
   const [addedId, setAddedId]                 = useState<string | null>(null);
 
   // Checkout
@@ -87,6 +89,12 @@ export default function StorePage() {
 
   function toggleWishlist(id: string) {
     setWishlist((w) => w.includes(id) ? w.filter((x) => x !== id) : [...w, id]);
+  }
+
+  function openProduct(p: Product) {
+    setSelected(p);
+    setSelectedSize(null);
+    setGalleryImg((p.images && p.images[0]) || p.image || null);
   }
 
   function addToCart(product: Product, size: string | null) {
@@ -267,7 +275,7 @@ export default function StorePage() {
                   <div
                     className="relative aspect-square flex items-center justify-center overflow-hidden cursor-pointer"
                     style={{ background: CARD_BG }}
-                    onClick={() => { setSelected(product); setSelectedSize(null); }}
+                    onClick={() => openProduct(product)}
                   >
                     {product.image ? (
                       <img src={product.image} alt={product.name_ar} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -305,7 +313,7 @@ export default function StorePage() {
                         {product.price} <span className="text-gray-600 text-[10px] font-normal">TND</span>
                       </p>
                       <button
-                        onClick={() => { setSelected(product); setSelectedSize(null); }}
+                        onClick={() => openProduct(product)}
                         className="px-3 py-1.5 rounded-xl bg-[#F7C600]/10 text-[#F7C600] text-[10px] font-black border border-[#F7C600]/20 hover:bg-[#F7C600] hover:text-black transition-all"
                       >
                         أضف للسلة
@@ -360,8 +368,8 @@ export default function StorePage() {
           >
             {/* Product visual header */}
             <div className="relative h-56 flex items-center justify-center overflow-hidden" style={{ background: CARD_BG }}>
-              {selected.image ? (
-                <img src={selected.image} alt={selected.name_ar} className="w-full h-full object-cover" />
+              {galleryImg ? (
+                <img src={galleryImg} alt={selected.name_ar} className="w-full h-full object-cover" />
               ) : (
                 <Placeholder className="w-32 h-32 opacity-30" />
               )}
@@ -377,6 +385,22 @@ export default function StorePage() {
                 ✕
               </button>
             </div>
+
+            {/* Thumbnail gallery */}
+            {selected.images && selected.images.length > 1 && (
+              <div className="flex gap-2 px-6 pt-4 overflow-x-auto scrollbar-hide">
+                {selected.images.map((url, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setGalleryImg(url)}
+                    className={`w-14 h-14 rounded-lg overflow-hidden border shrink-0 transition-all ${galleryImg === url ? "border-[#F7C600]" : "border-[#2a2a2a] opacity-70 hover:opacity-100"}`}
+                  >
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="p-6">
               {selected.name && <p className="text-gray-500 text-xs mb-1">{selected.name}</p>}

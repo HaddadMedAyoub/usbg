@@ -18,6 +18,7 @@ type Product = {
   category: string
   price: number
   image: string | null
+  images: string[] | null
   sizes: string[] | null
   badge: string | null
   description: string | null
@@ -26,7 +27,7 @@ type Product = {
 }
 
 const emptyForm = {
-  name_ar: '', name: '', category: 'shirts', price: '', image: '',
+  name_ar: '', name: '', category: 'shirts', price: '', images: [] as string[],
   sizes: [] as string[], badge: '', description: '', in_stock: true, sort_order: '0',
 }
 
@@ -50,24 +51,38 @@ export default function ProductsTab() {
     setProducts((data as Product[]) || [])
   }
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
+  async function handleImagesUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
     setUploading(true)
     try {
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('upload_preset', 'usbg_articles')
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        { method: 'POST', body: fd }
-      )
-      const data = await res.json()
-      if (data.secure_url) setForm(prev => ({ ...prev, image: data.secure_url }))
-      else alert('تعذّر رفع الصورة')
+      for (const file of files) {
+        const fd = new FormData()
+        fd.append('file', file)
+        fd.append('upload_preset', 'usbg_articles')
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+          { method: 'POST', body: fd }
+        )
+        const data = await res.json()
+        if (data.secure_url) setForm(prev => ({ ...prev, images: [...prev.images, data.secure_url] }))
+      }
     } finally {
       setUploading(false)
+      e.target.value = ''
     }
+  }
+
+  function removeImage(idx: number) {
+    setForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))
+  }
+
+  function makeCover(idx: number) {
+    setForm(prev => {
+      const imgs = [...prev.images]
+      const [pick] = imgs.splice(idx, 1)
+      return { ...prev, images: [pick, ...imgs] }
+    })
   }
 
   function toggleSize(sz: string) {
@@ -82,7 +97,9 @@ export default function ProductsTab() {
   function startEdit(p: Product) {
     setForm({
       name_ar: p.name_ar || '', name: p.name || '', category: p.category || 'shirts',
-      price: String(p.price ?? ''), image: p.image || '', sizes: p.sizes || [],
+      price: String(p.price ?? ''),
+      images: (p.images && p.images.length ? p.images : (p.image ? [p.image] : [])),
+      sizes: p.sizes || [],
       badge: p.badge || '', description: p.description || '', in_stock: p.in_stock,
       sort_order: String(p.sort_order ?? 0),
     })
@@ -102,7 +119,8 @@ export default function ProductsTab() {
       name: form.name.trim() || null,
       category: form.category,
       price,
-      image: form.image || null,
+      images: form.images,
+      image: form.images[0] || null,
       sizes: form.sizes,
       badge: form.badge || null,
       description: form.description.trim() || null,
@@ -201,21 +219,32 @@ export default function ProductsTab() {
           </div>
 
           <div>
-            <label className="text-gray-400 text-xs block mb-1">صورة المنتج</label>
-            {form.image ? (
-              <div className="relative w-full h-48 rounded-xl overflow-hidden border border-[#2a2a2a]">
-                <img src={form.image} alt="preview" className="w-full h-full object-cover" />
-                <button type="button" onClick={() => setForm(p => ({ ...p, image: '' }))} className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-lg">
-                  حذف الصورة
-                </button>
-              </div>
-            ) : (
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#2a2a2a] rounded-xl cursor-pointer hover:border-[#F7C600]/40 transition">
-                <span className="text-gray-500 text-xs">اضغط لرفع صورة</span>
-                <span className="text-gray-600 text-[10px] mt-1">JPG, PNG</span>
-                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+            <label className="text-gray-400 text-xs block mb-2">
+              صور المنتج <span className="text-gray-600">(الأولى هي صورة الغلاف)</span>
+            </label>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              {form.images.map((url, idx) => (
+                <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-[#2a2a2a]">
+                  <img src={url} alt={`صورة ${idx + 1}`} className="w-full h-full object-cover" />
+                  {idx === 0 && (
+                    <span className="absolute top-1 right-1 bg-[#F7C600] text-black text-[9px] font-black px-1.5 py-0.5 rounded">غلاف</span>
+                  )}
+                  <button type="button" onClick={() => removeImage(idx)} className="absolute top-1 left-1 w-5 h-5 rounded bg-black/70 text-white text-[10px] flex items-center justify-center hover:bg-red-500/80">
+                    ✕
+                  </button>
+                  {idx > 0 && (
+                    <button type="button" onClick={() => makeCover(idx)} className="absolute bottom-1 inset-x-1 bg-black/60 text-[#F7C600] text-[9px] font-bold py-0.5 rounded hover:bg-black/80">
+                      اجعلها الغلاف
+                    </button>
+                  )}
+                </div>
+              ))}
+              <label className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-[#2a2a2a] rounded-xl cursor-pointer hover:border-[#F7C600]/40 transition">
+                <span className="text-gray-500 text-2xl leading-none">+</span>
+                <span className="text-gray-600 text-[10px] mt-1">أضف صور</span>
+                <input type="file" accept="image/*" multiple className="hidden" onChange={handleImagesUpload} />
               </label>
-            )}
+            </div>
             {uploading && <p className="text-[#F7C600] text-xs mt-2">جاري الرفع...</p>}
           </div>
 
