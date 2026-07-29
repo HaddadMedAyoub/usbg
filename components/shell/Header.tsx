@@ -9,6 +9,7 @@ const navLinks = [
   { label: "الداعمون", href: "/donors" } ,
   { label: "من نحن", href: "/about" },
   { label: "الفريق", href: "/team" },
+  { label: "الرزنامة", href: "/calendar" },
   { label: "الأخبار", href: "/news" },
   { href: "/store", label: "المتجر" },
   { label: "المكتبة الرقمية", href: "/media" },
