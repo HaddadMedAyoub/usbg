@@ -76,10 +76,11 @@ export default function StandingsTable() {
     async function loadStandings() {
       setLoading(true);
 
+      // No season filter: the table is fully replaced each sync, so it always
+      // holds just the current season's data — show whatever is there.
       const { data, error } = await supabase
         .from("standings")
         .select("*")
-        .eq("season", "2025/2026")
         .order("rank", { ascending: true });
 
       if (error) {
