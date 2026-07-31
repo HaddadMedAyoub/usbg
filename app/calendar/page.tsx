@@ -27,7 +27,7 @@ const LOGOS: Record<string, string> = {
 const FIRST_LEG: { opponent: string; home: boolean }[] = [
   { opponent: "النادي الرياضي بحمام الأنف", home: true },
   { opponent: "الأولمبي الباجي", home: false },
-  { opponent: "النادي الرياضي الصفاقسي", home: false },
+  { opponent: "النادي الرياضي الصفاقسي", home: true },
   { opponent: "الاتحاد الرياضي المنستيري", home: false },
   { opponent: "النادي الأفريقي", home: true },
   { opponent: "الأمل الرياضي بحمام سوسة", home: false },
