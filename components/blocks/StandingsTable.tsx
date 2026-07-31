@@ -55,6 +55,22 @@ export default function StandingsTable() {
   const [rows, setRows] = useState<StandingRow[]>([]);
   const [season, setSeason] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedTeam, setSelectedTeam] = useState<StandingRow | null>(null);
+  const [teamMatches, setTeamMatches] = useState<any[] | null>(null);
+  const [loadingForm, setLoadingForm] = useState(false);
+
+  async function openTeam(row: StandingRow) {
+    setSelectedTeam(row);
+    setTeamMatches(null);
+    setLoadingForm(true);
+    const { data } = await supabase
+      .from("team_form")
+      .select("matches")
+      .eq("team", row.team)
+      .maybeSingle();
+    setTeamMatches(((data as any)?.matches as any[]) || []);
+    setLoadingForm(false);
+  }
 
   useEffect(() => {
     async function loadStandings() {
@@ -134,7 +150,8 @@ export default function StandingsTable() {
                         }
                         : {}
                     }
-                    className={`border-b transition-colors ${isClub
+                    onClick={() => openTeam(row)}
+                    className={`border-b transition-colors cursor-pointer ${isClub
                         ? "border-[#F7C600]/40 border-l-[3px] border-l-[#F7C600]"
                         : "border-[#1a1a1a] hover:bg-[#111]"
                       }`}
@@ -239,7 +256,91 @@ export default function StandingsTable() {
             اتحاد بن قردان
           </div>
         </div>
+
+        <p className="mt-3 text-center text-[11px] text-gray-600">اضغط على أي فريق لعرض إحصائياته وآخر مبارياته</p>
       </div>
+
+      {/* ── Team stats popup ── */}
+      {selectedTeam && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm px-4 pb-4"
+          onClick={() => setSelectedTeam(null)}
+          dir="rtl"
+        >
+          <div
+            className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3 p-5 border-b border-[#1a1a1a]">
+              <TeamLogo src={getTeamLogo(selectedTeam.team)} name={selectedTeam.team} />
+              <div className="flex-1 min-w-0">
+                <p className="text-white font-black truncate">{selectedTeam.team}</p>
+                <p className="text-gray-500 text-xs mt-0.5">
+                  المركز {selectedTeam.rank} · {selectedTeam.points} نقطة
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedTeam(null)}
+                className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-gray-500 hover:text-white text-xs shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-4 gap-2 p-5 border-b border-[#1a1a1a] text-center">
+              {[
+                { l: "لعب", v: selectedTeam.played },
+                { l: "فاز", v: selectedTeam.won },
+                { l: "تعادل", v: selectedTeam.draw },
+                { l: "خسر", v: selectedTeam.lost },
+                { l: "له", v: selectedTeam.gf },
+                { l: "عليه", v: selectedTeam.ga },
+                { l: "+/-", v: selectedTeam.gd > 0 ? `+${selectedTeam.gd}` : selectedTeam.gd },
+                { l: "نقاط", v: selectedTeam.points },
+              ].map((s) => (
+                <div key={s.l} className="rounded-xl bg-[#111] border border-[#1a1a1a] py-2">
+                  <p className="text-white font-black text-sm">{s.v}</p>
+                  <p className="text-gray-600 text-[10px] mt-0.5">{s.l}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="p-5 overflow-y-auto">
+              <p className="text-[#F7C600] text-xs font-bold mb-3">آخر المباريات</p>
+              {loadingForm ? (
+                <p className="text-gray-500 text-sm">جارٍ التحميل...</p>
+              ) : teamMatches && teamMatches.length > 0 ? (
+                <div className="flex flex-col gap-2">
+                  {teamMatches.map((m, i) => (
+                    <div key={i} className="flex items-center gap-3 rounded-xl bg-[#0a0a0a] border border-[#1a1a1a] px-3 py-2">
+                      <span
+                        className={`w-6 h-6 shrink-0 rounded-md flex items-center justify-center text-[11px] font-black ${
+                          m.outcome === "W"
+                            ? "bg-green-500/20 text-green-400"
+                            : m.outcome === "L"
+                            ? "bg-red-500/20 text-red-400"
+                            : "bg-gray-500/20 text-gray-400"
+                        }`}
+                      >
+                        {m.outcome === "W" ? "ف" : m.outcome === "L" ? "خ" : "ت"}
+                      </span>
+                      <span className="flex-1 text-xs text-gray-300 truncate">
+                        {m.home}{" "}
+                        <span className="text-white font-bold">
+                          {m.home_score}-{m.away_score}
+                        </span>{" "}
+                        {m.away}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">لا توجد بيانات متاحة بعد</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
