@@ -18,6 +18,8 @@ const teamLogos: Record<string, string> = {
   "US Monastir": "/images/teams/usm-monastir.png",
   "Zarzis": "/images/teams/zarzis.png",
   "Msaken": "/images/teams/msaken.png",
+  "Hamam-Sousse": "/images/teams/hamam-sousse.png",
+  "Hammam-Lif": "/images/teams/hamam-lif.png",
 
   // aliases matching DB values
   "Monastir": "/images/teams/usm-monastir.png",
