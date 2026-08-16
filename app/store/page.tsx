@@ -427,7 +427,7 @@ export default function StorePage() {
                     }}
                   >
                     {n ? (
-                      <img key={idx} src={imgs[idx]} alt={selected.name_ar} className="store-fade w-full h-full object-cover" />
+                      <img key={idx} src={imgs[idx]} alt={selected.name_ar} className="store-fade max-w-full max-h-full object-contain" />
                     ) : (
                       <Placeholder className="w-32 h-32 opacity-30" />
                     )}
