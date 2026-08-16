@@ -7,6 +7,14 @@ import Image from "next/image";
 import type { Article } from "@/lib/articles";
 import { getArticles } from "@/lib/articles";
 
+function formatDate(value?: string | null) {
+  if (!value) return "";
+  const d = new Date(value);
+  return isNaN(d.getTime())
+    ? ""
+    : d.toLocaleDateString("ar-TN", { year: "numeric", month: "long", day: "numeric" });
+}
+
 export default function ArticlesSlider() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -131,7 +139,7 @@ export default function ArticlesSlider() {
                 <div className="p-4">
                   {article.published_at && (
                     <p className="text-gray-500 text-[11px] mb-1">
-                      {article.published_at}
+                      {formatDate(article.published_at)}
                     </p>
                   )}
                   <h3 className="text-white font-bold text-sm leading-snug mb-1 line-clamp-2 group-hover:text-[#F7C600] transition-colors">

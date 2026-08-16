@@ -117,20 +117,20 @@ export default function StandingsTable() {
           )}
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-[#2a2a2a] bg-[#0b0b0b]">
-          <table className="w-full min-w-[760px] text-sm text-white">
+        <div className="rounded-xl border border-[#2a2a2a] bg-[#0b0b0b] overflow-hidden">
+          <table className="w-full text-sm text-white table-fixed sm:table-auto">
             <thead className="bg-[#111] border-b border-[#2a2a2a]">
               <tr>
-                <th className="py-3 px-3 text-left text-xs text-gray-400">#</th>
-                <th className="py-3 px-3 text-left text-xs text-gray-400">الفريق</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">النقاط</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">ل</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">ف</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">ت</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">خ</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">له</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">عليه</th>
-                <th className="py-3 px-3 text-center text-xs text-gray-400">+/-</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 w-9">#</th>
+                <th className="py-3 px-1.5 sm:px-3 text-right text-xs text-gray-400">الفريق</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 w-11">النقاط</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 w-9">ل</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 hidden sm:table-cell">ف</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 hidden sm:table-cell">ت</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 hidden sm:table-cell">خ</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 hidden sm:table-cell">له</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 hidden sm:table-cell">عليه</th>
+                <th className="py-3 px-1.5 sm:px-3 text-center text-xs text-gray-400 w-11">+/-</th>
               </tr>
             </thead>
 
@@ -158,7 +158,7 @@ export default function StandingsTable() {
                       }`}
                   >
                     {/* Rank */}
-                    <td className="py-3 px-3">
+                    <td className="py-3 px-1.5 sm:px-3">
                       <span
                         className={`text-xs font-black w-6 h-6 flex items-center justify-center rounded ${row.rank <= 2
                         
@@ -175,12 +175,12 @@ export default function StandingsTable() {
                     </td>
 
                     {/* Team */}
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-2">
+                    <td className="py-3 px-1.5 sm:px-3">
+                      <div className="flex items-center gap-2 min-w-0">
                         <TeamLogo src={getTeamLogo(row.team)} name={row.team} />
 
                         <span
-                          className={`font-bold text-xs sm:text-sm ${isClub
+                          className={`font-bold text-xs sm:text-sm truncate ${isClub
                               ? "text-[#F7C600] drop-shadow-[0_0_6px_rgba(247,198,0,0.6)]"
                               : "text-white"
                             }`}
@@ -191,7 +191,7 @@ export default function StandingsTable() {
                     </td>
 
                     {/* POINTS (moved here) */}
-                    <td className="py-3 px-3 text-center">
+                    <td className="py-3 px-1.5 sm:px-3 text-center">
                       <span
                         className={`font-black text-sm ${isClub
                             ? "text-[#F7C600] drop-shadow-[0_0_8px_rgba(247,198,0,0.8)]"
@@ -203,37 +203,37 @@ export default function StandingsTable() {
                     </td>
 
                     {/* Played */}
-                    <td className="py-3 px-3 text-center text-gray-300 text-xs">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-gray-300 text-xs">
                       {row.played}
                     </td>
 
                     {/* Won */}
-                    <td className="py-3 px-3 text-center text-green-400 text-xs font-semibold">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-green-400 text-xs font-semibold hidden sm:table-cell">
                       {row.won}
                     </td>
 
                     {/* Draw */}
-                    <td className="py-3 px-3 text-center text-gray-300 text-xs">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-gray-300 text-xs hidden sm:table-cell">
                       {row.draw}
                     </td>
 
                     {/* Lost */}
-                    <td className="py-3 px-3 text-center text-red-400 text-xs font-semibold">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-red-400 text-xs font-semibold hidden sm:table-cell">
                       {row.lost}
                     </td>
 
                     {/* GF */}
-                    <td className="py-3 px-3 text-center text-gray-300 text-xs">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-gray-300 text-xs hidden sm:table-cell">
                       {row.gf}
                     </td>
 
                     {/* GA */}
-                    <td className="py-3 px-3 text-center text-gray-300 text-xs">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-gray-300 text-xs hidden sm:table-cell">
                       {row.ga}
                     </td>
 
                     {/* GD */}
-                    <td className="py-3 px-3 text-center text-gray-300 text-xs">
+                    <td className="py-3 px-1.5 sm:px-3 text-center text-gray-300 text-xs">
                       {row.gd > 0 ? `+${row.gd}` : row.gd}
                     </td>
                   </tr>
