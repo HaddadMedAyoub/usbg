@@ -27,6 +27,16 @@ const teamLogos: Record<string, string> = {
   "Soliman": "/images/teams/as-soliman.png",
 };
 
+// Normalize a name so different dashes / spaces / casing all match the same
+// logo (e.g. "Hammam-Lif", "Hammam Lif", "hammam–lif" -> "hammamlif").
+function normKey(s: string): string {
+  return (s || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
+}
+
+const normalizedLogos: Record<string, string> = Object.fromEntries(
+  Object.entries(teamLogos).map(([k, v]) => [normKey(k), v])
+);
+
 export function getTeamLogo(team: string): string | undefined {
-  return teamLogos[team];
+  return teamLogos[team] ?? normalizedLogos[normKey(team)];
 }

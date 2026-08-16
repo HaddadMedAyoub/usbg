@@ -6,12 +6,12 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
   { label: "الرئيسية", href: "/" },
+  { href: "/store", label: "المتجر" },
   { label: "الداعمون", href: "/donors" } ,
   { label: "من نحن", href: "/about" },
   { label: "الفريق", href: "/team" },
   { label: "الرزنامة", href: "/calendar" },
   { label: "الأخبار", href: "/news" },
-  { href: "/store", label: "المتجر" },
   { label: "المكتبة الرقمية", href: "/media" },
   { label: "ادارة الجمعية ", href: "/administration" },
   { label: "اتصل بنا", href: "/contact" },
