@@ -361,7 +361,7 @@ export default function StorePage() {
             </span>
             <h2 className="text-white font-black text-2xl sm:text-4xl mb-3">اطلب الآن، وادفع عند الاستلام</h2>
             <p className="text-gray-500 text-sm leading-7 max-w-md mx-auto mb-8">
-              أضف منتجاتك إلى السلة، أكمل الطلب بإدخال اسمك ورقمك، وستتواصل معك إدارة النادي لتأكيد الطلب وترتيب التوصيل. الدفع يكون نقداً عند استلام طلبك.
+              أضف منتجاتك إلى السلة، أكمل الطلب بإدخال اسمك ورقمك، وسنتواصل معك عبر الهاتف لتأكيد الطلب. الدفع يكون نقداً عند استلام طلبك.
             </p>
             <div className="grid grid-cols-3 gap-4 mt-4 pt-8 border-t border-[#1a1a1a]">
               {[
@@ -692,7 +692,7 @@ export default function StorePage() {
                 <span className="text-xl">💵</span>
                 <div>
                   <p className="text-white font-bold text-sm">الدفع عند الاستلام</p>
-                  <p className="text-gray-500 text-[11px] mt-0.5 leading-5">ستتواصل معك إدارة النادي لتأكيد الطلب وترتيب التوصيل.</p>
+                  <p className="text-gray-500 text-[11px] mt-0.5 leading-5">سنتواصل معك عبر الهاتف لتأكيد الطلب.</p>
                 </div>
               </div>
             </div>
@@ -725,7 +725,7 @@ export default function StorePage() {
             <p className="text-gray-400 text-sm mb-3">شكراً لك! رقم طلبك هو:</p>
             <p className="text-[#F7C600] font-black text-lg tracking-wider mb-5">{confirmRef}</p>
             <p className="text-gray-500 text-xs leading-6 mb-6">
-              سنتواصل معك عبر الهاتف لتأكيد الطلب وترتيب التوصيل، والدفع عند الاستلام.
+              سنتواصل معك عبر الهاتف لتأكيد الطلب.
             </p>
             <button
               onClick={() => setConfirmRef(null)}
