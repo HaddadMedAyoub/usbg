@@ -224,7 +224,7 @@ export default function StorePage() {
                 USBG <span className="text-[#F7C600]">Store</span>
               </h1>
               <p className="text-gray-500 text-sm max-w-xs leading-6">
-                المنتجات الرسمية للاتحاد الرياضي ببنقردان · الموسم 2025/2026
+                المنتجات الرسمية للاتحاد الرياضي ببنقردان · الموسم 2026/2027
               </p>
             </div>
             <span className="text-[#F7C600]/5 font-black hidden sm:block select-none" style={{ fontSize: "9rem", lineHeight: 1 }}>90</span>
@@ -703,7 +703,7 @@ export default function StorePage() {
                 disabled={placing}
                 className="w-full py-4 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {placing ? "جارٍ الإرسال..." : "تأكيد الطلب عبر واتساب"}
+                {placing ? "جارٍ الإرسال..." : "تأكيد الطلب"}
               </button>
             </div>
           </div>

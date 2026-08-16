@@ -196,7 +196,11 @@ export default function AdminDashboard() {
 
         const cleanTitleAr = form.title_ar.trim();
         const cleanSlug = form.slug.trim();
-        const cleanContentAr = form.content_ar.trim();
+        const cleanContentHtml = form.content_html_ar.trim();
+        // If you pasted HTML directly, derive the plain-text version from it.
+        const cleanContentAr =
+            form.content_ar.trim() ||
+            cleanContentHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
         const cleanExcerpt = form.excerpt_ar.trim();
 
         if (!cleanTitleAr) {
@@ -209,7 +213,7 @@ export default function AdminDashboard() {
             return;
         }
 
-        if (!cleanContentAr) {
+        if (!cleanContentHtml && !cleanContentAr) {
             alert("محتوى المقال مطلوب");
             return;
         }
@@ -241,9 +245,9 @@ export default function AdminDashboard() {
                 title: form.title.trim() || null,
                 slug: cleanSlug,
                 excerpt_ar: cleanExcerpt || null,
-                content_ar: cleanContentAr,
+                content_ar: cleanContentAr || null,
                 content: form.content.trim() || null,
-                content_html_ar: form.content_html_ar || null,
+                content_html_ar: cleanContentHtml || null,
                 content_json_ar: form.content_json_ar || null,
                 category: form.category || "news",
                 image: form.image || null,
