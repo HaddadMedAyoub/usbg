@@ -73,6 +73,7 @@ export default function StorePage() {
   >(null);
   const [printNumber, setPrintNumber] = useState(false);
   const [shirtNumber, setShirtNumber] = useState("");
+  const [waUrl, setWaUrl] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -162,6 +163,7 @@ export default function StorePage() {
       return {
         id: i.product.id,
         name: i.product.name_ar,
+        image: i.product.image ?? null,
         size: i.size,
         qty: i.qty,
         price: i.product.price,
@@ -196,8 +198,7 @@ export default function StorePage() {
         `الاسم: ${custName.trim()}\n` +
         `الهاتف: ${custPhone.trim()}` +
         (custCity.trim() ? `\nالمدينة: ${custCity.trim()}` : "");
-      window.open(`https://wa.me/${ORDER_PHONE}?text=${encodeURIComponent(msg)}`, "_blank");
-
+      setWaUrl(`https://wa.me/${ORDER_PHONE}?text=${encodeURIComponent(msg)}`);
       setConfirmRef(ref);
       setCart([]);
       setBuyNow(null);
@@ -742,10 +743,23 @@ export default function StorePage() {
             <p className="text-gray-400 text-sm mb-3">شكراً لك! رقم طلبك هو:</p>
             <p className="text-[#F7C600] font-black text-lg tracking-wider mb-5">{confirmRef}</p>
             <p className="text-gray-500 text-xs leading-6 mb-6">
-              ستتواصل معك إدارة النادي عبر الهاتف لتأكيد الطلب وترتيب التوصيل، والدفع عند الاستلام.
+              سنتواصل معك عبر الهاتف لتأكيد الطلب وترتيب التوصيل، والدفع عند الاستلام. أرسل تفاصيل طلبك عبر واتساب ليصلنا فورًا.
             </p>
+            {waUrl && (
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-[#25D366] text-white font-black text-sm hover:bg-[#1eb955] transition-colors mb-2"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2a10 10 0 00-8.6 15.1L2 22l4.9-1.3A10 10 0 1012 2zm5.9 14.3c-.2.7-1.4 1.3-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-2.9-1.3-4.8-4.3-5-4.5-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.4.5c-.2.2-.4.4-.2.7.2.3.9 1.4 1.9 2.2 1.3 1.1 2.3 1.5 2.6 1.6.2.1.4.1.5-.1l.8-.9c.2-.2.4-.2.6-.1l1.9.9c.2.1.4.2.5.3.1.3.1.7-.1 1.4z"/>
+                </svg>
+                أرسل الطلب عبر واتساب
+              </a>
+            )}
             <button
-              onClick={() => setConfirmRef(null)}
+              onClick={() => { setConfirmRef(null); setWaUrl(null); }}
               className="w-full py-3 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors"
             >
               تم

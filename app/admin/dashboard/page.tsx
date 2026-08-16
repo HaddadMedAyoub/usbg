@@ -64,6 +64,7 @@ export default function AdminDashboard() {
     const [form, setForm] = useState<ArticleForm>(emptyForm);
     const [players, setPlayers] = useState<any[]>([])
     const [orders, setOrders] = useState<any[]>([])
+    const [orderFilter, setOrderFilter] = useState<'all' | 'new' | 'confirmed' | 'delivered'>('all')
     const [productCount, setProductCount] = useState(0)
     const [selectedPlayers, setSelectedPlayers] = useState<any[]>(Array(11).fill(null))
     const [lineup, setLineup] = useState({
@@ -822,63 +823,125 @@ export default function AdminDashboard() {
                 {tab === 'products' && <ProductsTab />}
 
                 {/* ── ORDERS TAB ── */}
-                {tab === 'orders' && (
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <p className="text-gray-500 text-xs">{orders.length} طلب</p>
-                            <button onClick={fetchOrders} className="text-gray-400 text-xs border border-[#2a2a2a] px-3 py-1.5 rounded-xl hover:border-[#F7C600]/40 hover:text-white transition">
-                                تحديث
-                            </button>
-                        </div>
+                {tab === 'orders' && (() => {
+                    const ST: Record<string, { label: string; cls: string; dot: string }> = {
+                        new:       { label: 'جديد',       cls: 'bg-[#F7C600]/15 text-[#F7C600] border-[#F7C600]/30', dot: 'bg-[#F7C600]' },
+                        confirmed: { label: 'مؤكد',       cls: 'bg-blue-500/15 text-blue-400 border-blue-500/30',   dot: 'bg-blue-400' },
+                        delivered: { label: 'تم التسليم', cls: 'bg-green-500/15 text-green-400 border-green-500/30', dot: 'bg-green-400' },
+                        cancelled: { label: 'ملغى',       cls: 'bg-red-500/15 text-red-400 border-red-500/30',      dot: 'bg-red-400' },
+                    }
+                    const counts: any = {
+                        all: orders.length,
+                        new: orders.filter(o => o.status === 'new').length,
+                        confirmed: orders.filter(o => o.status === 'confirmed').length,
+                        delivered: orders.filter(o => o.status === 'delivered').length,
+                    }
+                    const money = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + Number(o.total || 0), 0)
+                    const filtered = orderFilter === 'all' ? orders : orders.filter(o => o.status === orderFilter)
 
-                        {orders.length === 0 ? (
-                            <div className="text-center py-16 text-gray-600 text-sm">لا توجد طلبات بعد</div>
-                        ) : (
-                            orders.map((o) => (
-                                <div key={o.id} className="rounded-2xl border border-[#1e1e1e] bg-[#111] p-5">
-                                    <div className="flex items-start justify-between gap-4 mb-3">
-                                        <div>
-                                            <p className="text-[#F7C600] font-black text-sm">{o.ref || String(o.id).slice(0, 8)}</p>
-                                            <p className="text-gray-600 text-[11px] mt-0.5">{new Date(o.created_at).toLocaleString('ar-TN')}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2 shrink-0">
-                                            <select
-                                                value={o.status}
-                                                onChange={(e) => updateOrderStatus(o.id, e.target.value)}
-                                                className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-[#F7C600]/40"
-                                            >
-                                                <option value="new">🟡 جديد</option>
-                                                <option value="confirmed">🔵 مؤكد</option>
-                                                <option value="delivered">🟢 تم التسليم</option>
-                                                <option value="cancelled">🔴 ملغى</option>
-                                            </select>
-                                            <button onClick={() => deleteOrder(o.id)} className="text-red-400 text-xs hover:text-red-300">حذف</button>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs mb-3">
-                                        <span><span className="text-gray-600">الاسم:</span> <span className="text-white">{o.customer_name}</span></span>
-                                        <a href={`tel:${o.customer_phone}`} className="text-[#F7C600]" dir="ltr">{o.customer_phone}</a>
-                                        {o.customer_city && <span><span className="text-gray-600">المدينة:</span> <span className="text-white">{o.customer_city}</span></span>}
-                                    </div>
-
-                                    <div className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] p-3 flex flex-col gap-1">
-                                        {(o.items || []).map((it: any, idx: number) => (
-                                            <div key={idx} className="flex justify-between text-xs">
-                                                <span className="text-gray-400">{it.name}{it.size ? ` · ${it.size}` : ''} ×{it.qty}</span>
-                                                <span className="text-white">{it.price * it.qty} TND</span>
-                                            </div>
-                                        ))}
-                                        <div className="flex justify-between border-t border-[#1a1a1a] pt-1 mt-1">
-                                            <span className="text-gray-500 text-xs">المجموع</span>
-                                            <span className="text-[#F7C600] font-black text-sm">{o.total} TND</span>
-                                        </div>
-                                    </div>
+                    return (
+                        <div className="space-y-4">
+                            {/* Overview */}
+                            <div className="grid grid-cols-3 gap-3">
+                                <div className="rounded-2xl border border-[#1e1e1e] bg-[#111] p-4">
+                                    <p className="text-2xl font-black text-white">{counts.new}</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">طلبات جديدة</p>
                                 </div>
-                            ))
-                        )}
-                    </div>
-                )}
+                                <div className="rounded-2xl border border-[#1e1e1e] bg-[#111] p-4">
+                                    <p className="text-2xl font-black text-white">{counts.all}</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">إجمالي الطلبات</p>
+                                </div>
+                                <div className="rounded-2xl border border-[#F7C600]/20 bg-[#F7C600]/[0.05] p-4">
+                                    <p className="text-2xl font-black text-[#F7C600]">{money}</p>
+                                    <p className="text-gray-500 text-xs mt-0.5">القيمة (د.ت)</p>
+                                </div>
+                            </div>
+
+                            {/* Filters */}
+                            <div className="flex items-center justify-between gap-2">
+                                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                                    {([['all', 'الكل'], ['new', 'جديد'], ['confirmed', 'مؤكد'], ['delivered', 'تم التسليم']] as const).map(([k, label]) => (
+                                        <button key={k} onClick={() => setOrderFilter(k)}
+                                            className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border transition ${orderFilter === k ? 'bg-[#F7C600] text-black border-[#F7C600]' : 'border-[#2a2a2a] text-gray-400 hover:text-white'}`}>
+                                            {label}{k !== 'all' && counts[k] > 0 ? ` (${counts[k]})` : ''}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button onClick={fetchOrders} className="shrink-0 text-gray-400 text-xs border border-[#2a2a2a] px-3 py-1.5 rounded-xl hover:border-[#F7C600]/40 hover:text-white transition">↻ تحديث</button>
+                            </div>
+
+                            {/* List */}
+                            {filtered.length === 0 ? (
+                                <div className="text-center py-16 text-gray-600 text-sm">لا توجد طلبات {orderFilter !== 'all' ? 'بهذه الحالة' : 'بعد'}</div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {filtered.map((o) => {
+                                        const st = ST[o.status] || ST.new
+                                        const dim = o.status === 'delivered' || o.status === 'cancelled'
+                                        return (
+                                            <div key={o.id} className={`rounded-2xl border p-5 transition ${dim ? 'border-[#161616] bg-[#0d0d0d] opacity-70' : 'border-[#1e1e1e] bg-[#111]'}`}>
+                                                <div className="flex items-start justify-between gap-3 mb-3">
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        {o.items?.[0]?.image ? (
+                                                            <img src={o.items[0].image} className="w-11 h-11 rounded-xl object-cover shrink-0" alt="" />
+                                                        ) : (
+                                                            <div className="w-11 h-11 rounded-xl bg-[#1a1a1a] flex items-center justify-center shrink-0 text-lg">👕</div>
+                                                        )}
+                                                        <div className="min-w-0">
+                                                            <p className="text-[#F7C600] font-black text-sm">{o.ref || String(o.id).slice(0, 8)}</p>
+                                                            <p className="text-gray-600 text-[11px] mt-0.5">{new Date(o.created_at).toLocaleString('ar-TN')}</p>
+                                                        </div>
+                                                    </div>
+                                                    <span className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold ${st.cls}`}>
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />{st.label}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs mb-3">
+                                                    <span className="text-white font-bold">{o.customer_name}</span>
+                                                    <a href={`tel:${o.customer_phone}`} className="text-[#F7C600]" dir="ltr">{o.customer_phone}</a>
+                                                    {o.customer_city && <span className="text-gray-400">{o.customer_city}</span>}
+                                                </div>
+
+                                                <div className="rounded-xl border border-[#1a1a1a] bg-[#0a0a0a] p-3 flex flex-col gap-1.5 mb-3">
+                                                    {(o.items || []).map((it: any, idx: number) => (
+                                                        <div key={idx} className="flex justify-between text-xs">
+                                                            <span className="text-gray-300">
+                                                                {it.name}{it.size ? ` · ${it.size}` : ''} ×{it.qty}
+                                                                {it.print_number ? <span className="text-[#F7C600]"> · 🖨️ رقم {it.print_number}</span> : ''}
+                                                            </span>
+                                                            <span className="text-white shrink-0">{it.price * it.qty} TND</span>
+                                                        </div>
+                                                    ))}
+                                                    <div className="flex justify-between border-t border-[#1a1a1a] pt-1.5 mt-1">
+                                                        <span className="text-gray-500 text-xs">المجموع</span>
+                                                        <span className="text-[#F7C600] font-black text-sm">{o.total} TND</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-2">
+                                                    {o.status === 'new' && (
+                                                        <button onClick={() => updateOrderStatus(o.id, 'confirmed')} className="flex-1 py-2 rounded-xl bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs font-bold hover:bg-blue-500/25 transition">تأكيد</button>
+                                                    )}
+                                                    {o.status !== 'delivered' && o.status !== 'cancelled' && (
+                                                        <button onClick={() => updateOrderStatus(o.id, 'delivered')} className="flex-1 py-2 rounded-xl bg-green-500/15 text-green-400 border border-green-500/30 text-xs font-bold hover:bg-green-500/25 transition">✓ تم التسليم</button>
+                                                    )}
+                                                    {(o.status === 'delivered' || o.status === 'cancelled') && (
+                                                        <button onClick={() => updateOrderStatus(o.id, 'new')} className="flex-1 py-2 rounded-xl border border-[#2a2a2a] text-gray-400 text-xs font-bold hover:text-white transition">إرجاع لجديد</button>
+                                                    )}
+                                                    {o.status !== 'cancelled' && o.status !== 'delivered' && (
+                                                        <button onClick={() => updateOrderStatus(o.id, 'cancelled')} className="px-3 py-2 rounded-xl border border-[#2a2a2a] text-gray-500 text-xs hover:text-red-400 transition">إلغاء</button>
+                                                    )}
+                                                    <button onClick={() => deleteOrder(o.id)} className="px-3 py-2 rounded-xl border border-[#2a2a2a] text-red-400 text-xs hover:border-red-400/40 transition">حذف</button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    )
+                })()}
 
             </div>
         </div>
