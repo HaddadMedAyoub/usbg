@@ -66,6 +66,13 @@ export default function StorePage() {
   const [placing, setPlacing]                 = useState(false);
   const [confirmRef, setConfirmRef]           = useState<string | null>(null);
 
+  // Direct "order now" (skip cart) + optional shirt number printing
+  const [buyNow, setBuyNow] = useState<
+    { product: Product; size: string | null; qty: number; printNumber: boolean; number: string } | null
+  >(null);
+  const [printNumber, setPrintNumber] = useState(false);
+  const [shirtNumber, setShirtNumber] = useState("");
+
   useEffect(() => {
     async function load() {
       const { data } = await supabase
@@ -87,6 +94,12 @@ export default function StorePage() {
   const totalItems = cart.reduce((s, i) => s + i.qty, 0);
   const totalPrice = cart.reduce((s, i) => s + i.product.price * i.qty, 0);
 
+  // What the checkout is ordering: a single "buy now" item, or the cart.
+  const checkoutItems: { product: Product; size: string | null; qty: number; printNumber?: boolean; number?: string }[] =
+    buyNow ? [buyNow] : cart;
+  const checkoutCount = checkoutItems.reduce((s, i) => s + i.qty, 0);
+  const checkoutTotal = checkoutItems.reduce((s, i) => s + i.product.price * i.qty, 0);
+
   function toggleWishlist(id: string) {
     setWishlist((w) => w.includes(id) ? w.filter((x) => x !== id) : [...w, id]);
   }
@@ -95,6 +108,27 @@ export default function StorePage() {
     setSelected(p);
     setSelectedSize(null);
     setGalleryImg((p.images && p.images[0]) || p.image || null);
+    setPrintNumber(false);
+    setShirtNumber("");
+  }
+
+  // Direct order: skip the cart, go straight to checkout for this one product.
+  function orderNow(product: Product) {
+    setBuyNow({
+      product,
+      size: selectedSize,
+      qty: 1,
+      printNumber,
+      number: shirtNumber.trim(),
+    });
+    setSelected(null);
+    setShowCheckout(true);
+  }
+
+  function closeCheckout() {
+    if (placing) return;
+    setShowCheckout(false);
+    setBuyNow(null);
   }
 
   function addToCart(product: Product, size: string | null) {
@@ -118,17 +152,21 @@ export default function StorePage() {
       alert("الرجاء إدخال الاسم ورقم الهاتف");
       return;
     }
-    if (cart.length === 0) return;
+    if (checkoutItems.length === 0) return;
 
     setPlacing(true);
     const ref = "USBG-" + Math.random().toString(36).slice(2, 7).toUpperCase();
-    const items = cart.map((i) => ({
-      id: i.product.id,
-      name: i.product.name_ar,
-      size: i.size,
-      qty: i.qty,
-      price: i.product.price,
-    }));
+    const items = checkoutItems.map((i) => {
+      const printed = !!(i.printNumber && i.number);
+      return {
+        id: i.product.id,
+        name: i.product.name_ar,
+        size: i.size,
+        qty: i.qty,
+        price: i.product.price,
+        ...(printed ? { print_number: i.number } : {}),
+      };
+    });
 
     try {
       const { error } = await supabase.from("orders").insert([
@@ -138,21 +176,21 @@ export default function StorePage() {
           customer_phone: custPhone.trim(),
           customer_city: custCity.trim() || null,
           items,
-          total: totalPrice,
+          total: checkoutTotal,
           status: "new",
         },
       ]);
       if (error) throw error;
 
-      const lines = cart.map(
-        (i) =>
-          `• ${i.product.name_ar}${i.size ? ` (مقاس ${i.size})` : ""} ×${i.qty} — ${i.product.price * i.qty} TND`
-      );
+      const lines = checkoutItems.map((i) => {
+        const printed = !!(i.printNumber && i.number);
+        return `• ${i.product.name_ar}${i.size ? ` (مقاس ${i.size})` : ""} ×${i.qty}${printed ? ` — طباعة رقم ${i.number}` : ""} — ${i.product.price * i.qty} TND`;
+      });
       const msg =
         `🛒 طلب جديد من متجر USBG\n` +
         `رقم الطلب: ${ref}\n\n` +
         `${lines.join("\n")}\n\n` +
-        `المجموع: ${totalPrice} TND\n` +
+        `المجموع: ${checkoutTotal} TND\n` +
         `الدفع: عند الاستلام\n\n` +
         `الاسم: ${custName.trim()}\n` +
         `الهاتف: ${custPhone.trim()}` +
@@ -161,6 +199,7 @@ export default function StorePage() {
 
       setConfirmRef(ref);
       setCart([]);
+      setBuyNow(null);
       setShowCheckout(false);
       setCartOpen(false);
       setCustName("");
@@ -434,6 +473,34 @@ export default function StorePage() {
                 </div>
               )}
 
+              {/* Shirt number printing */}
+              {selected.category === "shirts" && (
+                <div className="mb-5">
+                  <button
+                    type="button"
+                    onClick={() => setPrintNumber((v) => !v)}
+                    className={`flex items-center justify-between w-full rounded-2xl border px-4 py-3 transition-colors ${printNumber ? "border-[#F7C600]/40 bg-[#F7C600]/[0.06]" : "border-[#2a2a2a] hover:border-[#F7C600]/30"}`}
+                  >
+                    <span className="text-sm font-bold text-white">طباعة رقم على القميص؟</span>
+                    <span className={`w-10 h-6 rounded-full flex items-center p-0.5 transition-all ${printNumber ? "bg-[#F7C600] justify-end" : "bg-[#2a2a2a] justify-start"}`}>
+                      <span className="w-5 h-5 rounded-full bg-black" />
+                    </span>
+                  </button>
+                  {printNumber && (
+                    <div className="mt-3">
+                      <label className="text-gray-500 text-[11px] block mb-1">الرقم المطلوب *</label>
+                      <input
+                        value={shirtNumber}
+                        onChange={(e) => setShirtNumber(e.target.value.replace(/[^0-9]/g, "").slice(0, 2))}
+                        inputMode="numeric"
+                        placeholder="مثال: 10"
+                        className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-sm text-white text-center outline-none focus:border-[#F7C600]/40"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Actions */}
               <div className="flex gap-3">
                 <button
@@ -443,11 +510,11 @@ export default function StorePage() {
                   {wishlist.includes(selected.id) ? "❤️" : "🤍"}
                 </button>
                 <button
-                  onClick={() => addToCart(selected, selectedSize)}
-                  disabled={!!(selected.sizes && selected.sizes.length > 0) && !selectedSize}
+                  onClick={() => orderNow(selected)}
+                  disabled={(!!(selected.sizes && selected.sizes.length > 0) && !selectedSize) || (printNumber && !shirtNumber.trim())}
                   className="flex-1 py-3 rounded-2xl bg-[#F7C600] text-black font-black text-sm hover:bg-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  أضف إلى السلة
+                  اطلب الآن ←
                 </button>
               </div>
             </div>
@@ -541,7 +608,7 @@ export default function StorePage() {
       {showCheckout && (
         <div
           className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm px-4 pb-4"
-          onClick={() => !placing && setShowCheckout(false)}
+          onClick={closeCheckout}
         >
           <div
             className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl max-h-[92vh] flex flex-col"
@@ -550,10 +617,10 @@ export default function StorePage() {
             <div className="flex items-center justify-between p-5 border-b border-[#1a1a1a]">
               <div>
                 <h3 className="text-white font-black text-lg">إتمام الطلب</h3>
-                <p className="text-gray-600 text-xs mt-0.5">{totalItems} منتج · {totalPrice} TND</p>
+                <p className="text-gray-600 text-xs mt-0.5">{checkoutCount} منتج · {checkoutTotal} TND</p>
               </div>
               <button
-                onClick={() => !placing && setShowCheckout(false)}
+                onClick={closeCheckout}
                 className="w-8 h-8 rounded-full border border-[#2a2a2a] flex items-center justify-center text-gray-500 hover:text-white text-xs"
               >
                 ✕
@@ -562,17 +629,22 @@ export default function StorePage() {
 
             <div className="p-5 overflow-y-auto flex flex-col gap-4">
               <div className="rounded-2xl border border-[#1a1a1a] bg-[#0a0a0a] p-4 flex flex-col gap-2">
-                {cart.map((item, i) => (
-                  <div key={i} className="flex justify-between text-xs">
-                    <span className="text-gray-400 truncate pl-2">
-                      {item.product.name_ar}{item.size ? ` · ${item.size}` : ""} ×{item.qty}
-                    </span>
-                    <span className="text-white font-bold shrink-0">{item.product.price * item.qty} TND</span>
+                {checkoutItems.map((item, i) => (
+                  <div key={i} className="text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400 truncate pl-2">
+                        {item.product.name_ar}{item.size ? ` · ${item.size}` : ""} ×{item.qty}
+                      </span>
+                      <span className="text-white font-bold shrink-0">{item.product.price * item.qty} TND</span>
+                    </div>
+                    {item.printNumber && item.number && (
+                      <p className="text-[#F7C600]/80 text-[11px] mt-0.5">🖨️ طباعة رقم {item.number}</p>
+                    )}
                   </div>
                 ))}
                 <div className="flex justify-between border-t border-[#1a1a1a] pt-2 mt-1">
                   <span className="text-gray-500 text-xs">المجموع</span>
-                  <span className="text-[#F7C600] font-black">{totalPrice} TND</span>
+                  <span className="text-[#F7C600] font-black">{checkoutTotal} TND</span>
                 </div>
               </div>
 
