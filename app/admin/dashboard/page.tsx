@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import * as XLSX from 'xlsx'
 import DonorsTab from '../DonorsTab'
 import ProductsTab from '../ProductsTab'
 import RichTextEditor from '@/components/RichTextEditor'
@@ -141,27 +142,31 @@ export default function AdminDashboard() {
     function exportOrders(list: any[]) {
         const fmtDate = (v: string) => {
             const d = new Date(v)
-            return isNaN(d.getTime()) ? '' : d.toLocaleString('ar-TN', {
-                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-            })
+            if (isNaN(d.getTime())) return ''
+            const p = (n: number) => String(n).padStart(2, '0')
+            return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
         }
-        const esc = (s: any) => `"${(s ?? '').toString().replace(/"/g, '""')}"`
-        const headers = ['الاسم', 'المدينة', 'الهاتف', 'التاريخ', 'المجموع', 'المقاس', 'الرقم']
-        const rows = list.map((o) => {
+        const header = ['الاسم', 'المدينة', 'الهاتف', 'التاريخ', 'المجموع', 'المقاس', 'الرقم']
+        const data = list.map((o) => {
             const items = o.items || []
             const sizes = items.map((i: any) => i.size).filter(Boolean).join('، ')
             const numbers = items.map((i: any) => i.print_number).filter(Boolean).join('، ')
-            return [o.customer_name, o.customer_city, o.customer_phone, fmtDate(o.created_at), o.total, sizes, numbers].map(esc).join(',')
+            return [
+                String(o.customer_name || ''),
+                String(o.customer_city || ''),
+                String(o.customer_phone || ''), // kept as text (leading 0 / + preserved)
+                fmtDate(o.created_at),
+                Number(o.total) || 0,
+                sizes,
+                numbers,
+            ]
         })
-        // BOM so Excel reads Arabic correctly on double-click.
-        const csv = '﻿' + [headers.map(esc).join(','), ...rows].join('\r\n')
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `orders-${new Date().toISOString().slice(0, 10)}.csv`
-        a.click()
-        URL.revokeObjectURL(url)
+        const ws = XLSX.utils.aoa_to_sheet([header, ...data])
+        ws['!cols'] = [{ wch: 22 }, { wch: 24 }, { wch: 16 }, { wch: 17 }, { wch: 9 }, { wch: 8 }, { wch: 8 }]
+        ;(ws as any)['!views'] = [{ RTL: true }]
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, ws, 'الطلبات')
+        XLSX.writeFile(wb, `orders-${new Date().toISOString().slice(0, 10)}.xlsx`)
     }
 
 
