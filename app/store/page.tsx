@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 
 // ⚠️ Club's WhatsApp order number — international format, digits only, no "+".
@@ -55,7 +55,8 @@ export default function StorePage() {
   const [cartOpen, setCartOpen]               = useState(false);
   const [selected, setSelected]               = useState<Product | null>(null);
   const [selectedSize, setSelectedSize]       = useState<string | null>(null);
-  const [galleryImg, setGalleryImg]           = useState<string | null>(null);
+  const [galleryIdx, setGalleryIdx]           = useState(0);
+  const touchX = useRef(0);
   const [addedId, setAddedId]                 = useState<string | null>(null);
 
   // Checkout
@@ -107,7 +108,7 @@ export default function StorePage() {
   function openProduct(p: Product) {
     setSelected(p);
     setSelectedSize(null);
-    setGalleryImg((p.images && p.images[0]) || p.image || null);
+    setGalleryIdx(0);
     setPrintNumber(false);
     setShirtNumber("");
   }
@@ -214,6 +215,7 @@ export default function StorePage() {
 
   return (
     <div className="min-h-screen bg-black text-white pb-32">
+      <style>{`@keyframes storeFade{from{opacity:0}to{opacity:1}}.store-fade{animation:storeFade .28s ease}`}</style>
 
       {/* ══ Hero ══ */}
       <div className="relative overflow-hidden">
@@ -402,46 +404,88 @@ export default function StorePage() {
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+            className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl max-h-[92vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Product visual header */}
-            <div className="relative h-56 flex items-center justify-center overflow-hidden" style={{ background: CARD_BG }}>
-              {galleryImg ? (
-                <img src={galleryImg} alt={selected.name_ar} className="w-full h-full object-cover" />
-              ) : (
-                <Placeholder className="w-32 h-32 opacity-30" />
-              )}
-              {selected.badge && (
-                <span className={`absolute top-4 right-4 text-[10px] font-black px-2 py-0.5 rounded-full border ${badgeStyle[selected.badge] ?? "bg-[#F7C600]/20 text-[#F7C600] border-[#F7C600]/30"}`}>
-                  {selected.badge}
-                </span>
-              )}
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-4 left-4 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-gray-400 hover:text-white text-xs"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Thumbnail gallery */}
-            {selected.images && selected.images.length > 1 && (
-              <div className="flex gap-2 px-6 pt-4 overflow-x-auto scrollbar-hide">
-                {selected.images.map((url, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setGalleryImg(url)}
-                    className={`w-14 h-14 rounded-lg overflow-hidden border shrink-0 transition-all ${galleryImg === url ? "border-[#F7C600]" : "border-[#2a2a2a] opacity-70 hover:opacity-100"}`}
+            {/* Product gallery */}
+            {(() => {
+              const imgs = selected.images && selected.images.length
+                ? selected.images
+                : selected.image ? [selected.image] : [];
+              const n = imgs.length;
+              const idx = n ? ((galleryIdx % n) + n) % n : 0;
+              const go = (d: number) => { if (n) setGalleryIdx((idx + d + n) % n); };
+              return (
+                <>
+                  <div
+                    className="relative h-64 shrink-0 flex items-center justify-center overflow-hidden select-none"
+                    style={{ background: CARD_BG }}
+                    onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+                    onTouchEnd={(e) => {
+                      const dx = e.changedTouches[0].clientX - touchX.current;
+                      if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+                    }}
                   >
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+                    {n ? (
+                      <img key={idx} src={imgs[idx]} alt={selected.name_ar} className="store-fade w-full h-full object-cover" />
+                    ) : (
+                      <Placeholder className="w-32 h-32 opacity-30" />
+                    )}
 
-            <div className="p-6">
+                    {selected.badge && (
+                      <span className={`absolute top-4 right-4 text-[10px] font-black px-2 py-0.5 rounded-full border ${badgeStyle[selected.badge] ?? "bg-[#F7C600]/20 text-[#F7C600] border-[#F7C600]/30"}`}>
+                        {selected.badge}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => setSelected(null)}
+                      className="absolute top-4 left-4 z-10 w-8 h-8 rounded-full bg-black/50 backdrop-blur flex items-center justify-center text-gray-300 hover:text-white text-xs"
+                    >
+                      ✕
+                    </button>
+
+                    {n > 1 && (
+                      <>
+                        <button
+                          onClick={() => go(-1)}
+                          aria-label="السابق"
+                          className="absolute top-1/2 right-3 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 backdrop-blur flex items-center justify-center text-white text-lg leading-none hover:bg-black/70 transition-colors"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          onClick={() => go(1)}
+                          aria-label="التالي"
+                          className="absolute top-1/2 left-3 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 backdrop-blur flex items-center justify-center text-white text-lg leading-none hover:bg-black/70 transition-colors"
+                        >
+                          ›
+                        </button>
+                        <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-black/50 backdrop-blur text-white text-[11px] font-bold tabular-nums">
+                          {idx + 1} / {n}
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  {n > 1 && (
+                    <div className="flex gap-2 px-6 pt-4 overflow-x-auto scrollbar-hide shrink-0">
+                      {imgs.map((url, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setGalleryIdx(i)}
+                          className={`w-14 h-14 rounded-lg overflow-hidden border shrink-0 transition-all ${idx === i ? "border-[#F7C600] ring-1 ring-[#F7C600]/40" : "border-[#2a2a2a] opacity-60 hover:opacity-100"}`}
+                        >
+                          <img src={url} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+
+            <div className="p-6 overflow-y-auto flex-1 min-h-0">
               {selected.name && <p className="text-gray-500 text-xs mb-1">{selected.name}</p>}
               <h3 className="text-white font-black text-xl mb-1">{selected.name_ar}</h3>
               <p className="text-[#F7C600] font-black text-2xl mb-4">
