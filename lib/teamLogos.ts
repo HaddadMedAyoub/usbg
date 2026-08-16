@@ -38,5 +38,18 @@ const normalizedLogos: Record<string, string> = Object.fromEntries(
 );
 
 export function getTeamLogo(team: string): string | undefined {
-  return teamLogos[team] ?? normalizedLogos[normKey(team)];
+  if (teamLogos[team]) return teamLogos[team];
+
+  const nk = normKey(team);
+  if (normalizedLogos[nk]) return normalizedLogos[nk];
+
+  // Fallback: some sources add a club prefix (e.g. Transfermarkt "CS Hammam-Lif"
+  // vs FlashScore "Hammam-Lif"). Strip a leading 1–3 letter abbreviation and retry.
+  const stripped = team.replace(/^\s*[A-Za-z]{1,3}\.?\s+/, "");
+  if (stripped && stripped !== team) {
+    const sk = normKey(stripped);
+    if (normalizedLogos[sk]) return normalizedLogos[sk];
+  }
+
+  return undefined;
 }
