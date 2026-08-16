@@ -138,6 +138,32 @@ export default function AdminDashboard() {
         setOrders(prev => prev.filter(o => o.id !== id))
     }
 
+    function exportOrders(list: any[]) {
+        const fmtDate = (v: string) => {
+            const d = new Date(v)
+            return isNaN(d.getTime()) ? '' : d.toLocaleString('ar-TN', {
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+            })
+        }
+        const esc = (s: any) => `"${(s ?? '').toString().replace(/"/g, '""')}"`
+        const headers = ['الاسم', 'المدينة', 'الهاتف', 'التاريخ', 'المجموع', 'المقاس', 'الرقم']
+        const rows = list.map((o) => {
+            const items = o.items || []
+            const sizes = items.map((i: any) => i.size).filter(Boolean).join('، ')
+            const numbers = items.map((i: any) => i.print_number).filter(Boolean).join('، ')
+            return [o.customer_name, o.customer_city, o.customer_phone, fmtDate(o.created_at), o.total, sizes, numbers].map(esc).join(',')
+        })
+        // BOM so Excel reads Arabic correctly on double-click.
+        const csv = '﻿' + [headers.map(esc).join(','), ...rows].join('\r\n')
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `orders-${new Date().toISOString().slice(0, 10)}.csv`
+        a.click()
+        URL.revokeObjectURL(url)
+    }
+
 
     function generateSlug(title: string) {
         return title
@@ -871,7 +897,10 @@ export default function AdminDashboard() {
                                         </button>
                                     ))}
                                 </div>
-                                <button onClick={fetchOrders} className="shrink-0 text-gray-400 text-xs border border-[#2a2a2a] px-3 py-1.5 rounded-xl hover:border-[#F7C600]/40 hover:text-white transition">↻ تحديث</button>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <button onClick={() => exportOrders(filtered)} disabled={filtered.length === 0} className="bg-[#F7C600] text-black text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-[#F7C600]/90 transition disabled:opacity-40">⬇ تصدير</button>
+                                    <button onClick={fetchOrders} className="text-gray-400 text-xs border border-[#2a2a2a] px-3 py-1.5 rounded-xl hover:border-[#F7C600]/40 hover:text-white transition">↻ تحديث</button>
+                                </div>
                             </div>
 
                             {/* List */}
