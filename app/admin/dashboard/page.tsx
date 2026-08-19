@@ -153,15 +153,25 @@ export default function AdminDashboard() {
         return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
     }
 
+    // Resolve each product id -> colour (colour lives in the English name).
+    async function productColorMap(): Promise<Record<string, string>> {
+        const { data } = await supabase.from('products').select('id, name, name_ar')
+        const map: Record<string, string> = {}
+        for (const p of (data || [])) map[p.id] = jerseyColor(`${p.name || ''} ${p.name_ar || ''}`)
+        return map
+    }
+
     // FACTORY: how many jerseys per size, for each colour separately.
-    function exportFactory(list: any[]) {
+    async function exportFactory(list: any[]) {
+        const cmap = await productColorMap()
+        const colorOf = (it: any) => cmap[it.id] || jerseyColor(`${it.name_en || ''} ${it.name || ''}`)
         const SIZE_ORDER = ['S', 'M', 'L', 'XL', 'XXL']
         const counts: Record<string, Record<string, number>> = {}
         const colorsSet = new Set<string>()
         const sizesSet = new Set<string>()
         for (const o of list) {
             for (const it of (o.items || [])) {
-                const color = jerseyColor(it.name)
+                const color = colorOf(it)
                 const size = it.size || '—'
                 const qty = Number(it.qty) || 1
                 colorsSet.add(color); sizesSet.add(size)
@@ -190,13 +200,15 @@ export default function AdminDashboard() {
     }
 
     // ORDERS: customer call-list, with colour.
-    function exportOrders(list: any[]) {
+    async function exportOrders(list: any[]) {
+        const cmap = await productColorMap()
+        const colorOf = (it: any) => cmap[it.id] || jerseyColor(`${it.name_en || ''} ${it.name || ''}`)
         const header = ['الاسم', 'المدينة', 'الهاتف', 'التاريخ', 'المجموع', 'اللون', 'المقاس', 'الرقم']
         const data = list.map((o) => {
             const items = o.items || []
             const sizes = items.map((i: any) => i.size).filter(Boolean).join('، ')
             const numbers = items.map((i: any) => i.print_number).filter(Boolean).join('، ')
-            const colors = [...new Set(items.map((i: any) => jerseyColor(i.name)))].join('، ')
+            const colors = [...new Set(items.map((i: any) => colorOf(i)))].join('، ')
             return [
                 String(o.customer_name || ''),
                 String(o.customer_city || ''),
