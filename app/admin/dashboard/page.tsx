@@ -139,30 +139,77 @@ export default function AdminDashboard() {
         setOrders(prev => prev.filter(o => o.id !== id))
     }
 
-    function exportOrders(list: any[]) {
-        const fmtDate = (v: string) => {
-            const d = new Date(v)
-            if (isNaN(d.getTime())) return ''
-            const p = (n: number) => String(n).padStart(2, '0')
-            return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
+    function jerseyColor(name: string): string {
+        const n = (name || '').toLowerCase()
+        if (n.includes('أبيض') || n.includes('white') || n.includes('blanc')) return 'أبيض'
+        if (n.includes('أصفر') || n.includes('أسود') || n.includes('yellow') || n.includes('black') || n.includes('noir') || n.includes('jaune')) return 'أصفر وأسود'
+        return 'غير محدد'
+    }
+
+    function fmtOrderDate(v: string) {
+        const d = new Date(v)
+        if (isNaN(d.getTime())) return ''
+        const p = (n: number) => String(n).padStart(2, '0')
+        return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
+    }
+
+    // FACTORY: how many jerseys per size, for each colour separately.
+    function exportFactory(list: any[]) {
+        const SIZE_ORDER = ['S', 'M', 'L', 'XL', 'XXL']
+        const counts: Record<string, Record<string, number>> = {}
+        const colorsSet = new Set<string>()
+        const sizesSet = new Set<string>()
+        for (const o of list) {
+            for (const it of (o.items || [])) {
+                const color = jerseyColor(it.name)
+                const size = it.size || '—'
+                const qty = Number(it.qty) || 1
+                colorsSet.add(color); sizesSet.add(size)
+                counts[color] = counts[color] || {}
+                counts[color][size] = (counts[color][size] || 0) + qty
+            }
         }
-        const header = ['الاسم', 'المدينة', 'الهاتف', 'التاريخ', 'المجموع', 'المقاس', 'الرقم']
+        const colorOrder = ['أبيض', 'أصفر وأسود']
+        const colors = [...colorOrder.filter(c => colorsSet.has(c)), ...[...colorsSet].filter(c => !colorOrder.includes(c))]
+        const sizes = [...SIZE_ORDER.filter(s => sizesSet.has(s)), ...[...sizesSet].filter(s => !SIZE_ORDER.includes(s))]
+
+        const header = ['المقاس', ...colors, 'المجموع']
+        const rows = sizes.map(size => {
+            const per = colors.map(c => counts[c]?.[size] || 0)
+            return [size, ...per, per.reduce((a, b) => a + b, 0)]
+        })
+        const colTotals = colors.map(c => sizes.reduce((a, s) => a + (counts[c]?.[s] || 0), 0))
+        rows.push(['المجموع', ...colTotals, colTotals.reduce((a, b) => a + b, 0)])
+
+        const ws = XLSX.utils.aoa_to_sheet([header, ...rows])
+        ws['!cols'] = [{ wch: 10 }, ...colors.map(() => ({ wch: 14 })), { wch: 10 }]
+        ;(ws as any)['!views'] = [{ RTL: true }]
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, ws, 'الإنتاج')
+        XLSX.writeFile(wb, `factory-${new Date().toISOString().slice(0, 10)}.xlsx`)
+    }
+
+    // ORDERS: customer call-list, with colour.
+    function exportOrders(list: any[]) {
+        const header = ['الاسم', 'المدينة', 'الهاتف', 'التاريخ', 'المجموع', 'اللون', 'المقاس', 'الرقم']
         const data = list.map((o) => {
             const items = o.items || []
             const sizes = items.map((i: any) => i.size).filter(Boolean).join('، ')
             const numbers = items.map((i: any) => i.print_number).filter(Boolean).join('، ')
+            const colors = [...new Set(items.map((i: any) => jerseyColor(i.name)))].join('، ')
             return [
                 String(o.customer_name || ''),
                 String(o.customer_city || ''),
-                String(o.customer_phone || ''), // kept as text (leading 0 / + preserved)
-                fmtDate(o.created_at),
+                String(o.customer_phone || ''), // text — keeps leading 0 / +
+                fmtOrderDate(o.created_at),
                 Number(o.total) || 0,
+                colors,
                 sizes,
                 numbers,
             ]
         })
         const ws = XLSX.utils.aoa_to_sheet([header, ...data])
-        ws['!cols'] = [{ wch: 22 }, { wch: 24 }, { wch: 16 }, { wch: 17 }, { wch: 9 }, { wch: 8 }, { wch: 8 }]
+        ws['!cols'] = [{ wch: 22 }, { wch: 24 }, { wch: 16 }, { wch: 17 }, { wch: 9 }, { wch: 14 }, { wch: 8 }, { wch: 8 }]
         ;(ws as any)['!views'] = [{ RTL: true }]
         const wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, ws, 'الطلبات')
@@ -903,7 +950,8 @@ export default function AdminDashboard() {
                                     ))}
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
-                                    <button onClick={() => exportOrders(filtered)} disabled={filtered.length === 0} className="bg-[#F7C600] text-black text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-[#F7C600]/90 transition disabled:opacity-40">⬇ تصدير</button>
+                                    <button onClick={() => exportFactory(filtered)} disabled={filtered.length === 0} className="bg-[#F7C600] text-black text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-[#F7C600]/90 transition disabled:opacity-40">🏭 المصنع</button>
+                                    <button onClick={() => exportOrders(filtered)} disabled={filtered.length === 0} className="bg-white/10 text-white border border-[#2a2a2a] text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-white/15 transition disabled:opacity-40">⬇ الطلبات</button>
                                     <button onClick={fetchOrders} className="text-gray-400 text-xs border border-[#2a2a2a] px-3 py-1.5 rounded-xl hover:border-[#F7C600]/40 hover:text-white transition">↻ تحديث</button>
                                 </div>
                             </div>
