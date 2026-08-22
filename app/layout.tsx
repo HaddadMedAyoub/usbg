@@ -22,8 +22,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body 
         className="min-h-dvh bg-black text-white antialiased" 
         style={{ fontFamily: "var(--font-cairo), sans-serif" }}
-        suppressHydrationWarning  
+        suppressHydrationWarning
       >
+        {/* Mourning theme — auto-removes itself after the end date (7 days). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(Date.now()<new Date("2026-08-29T23:59:59").getTime()){document.documentElement.classList.add("mourning")}}catch(e){}`,
+          }}
+        />
         <Header />
         <main className="w-full">{children}</main>
         <Footer />

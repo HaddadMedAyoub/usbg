@@ -17,6 +17,14 @@ body {
   font-family: var(--font-cairo), Arial, sans-serif;
 }
 
+/* Mourning theme: site-wide grayscale. The `mourning` class is added by an
+   inline script in layout.tsx only while the date is before the end time,
+   so it removes itself automatically. */
+html.mourning {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #111; }
